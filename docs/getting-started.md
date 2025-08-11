@@ -100,7 +100,7 @@ wallet.apply_update(update)
 print(f"Wallet balance: {wallet.balance()}")
 ```
 
-**[📖 Python Installation Guide →](./installation#python-installation)**
+**[📖 Python Installation Guide →](./getting-started/installation#python-installation)**
 
 </TabItem>
 <TabItem value="rust" label="Rust">
@@ -143,7 +143,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-**[📖 Rust Integration Guide →](./installation#rust-development)**
+**[📖 Rust Integration Guide →](./getting-started/installation#rust-development)**
 
 </TabItem>
 <TabItem value="cli" label="CLI">
@@ -187,7 +187,7 @@ lwk_cli wallet balance --wallet my_wallet
 kill $SERVER_PID
 ```
 
-**[📖 CLI Installation Guide →](./installation#command-line-installation)**
+**[📖 CLI Installation Guide →](./getting-started/installation#command-line-installation)**
 
 </TabItem>
 <TabItem value="kotlin" label="Kotlin">
@@ -230,7 +230,7 @@ class WalletManager {
 }
 ```
 
-**[📖 Android Integration Guide →](./installation#android-development)**
+**[📖 Android Integration Guide →](./getting-started/installation#android-development)**
 
 </TabItem>
 <TabItem value="swift" label="Swift">
@@ -275,7 +275,7 @@ class WalletManager: ObservableObject {
 }
 ```
 
-**[📖 iOS Integration Guide →](./installation#ios-development)**
+**[📖 iOS Integration Guide →](./getting-started/installation#ios-development)**
 
 </TabItem>
 <TabItem value="javascript" label="JavaScript/WASM">
@@ -314,7 +314,7 @@ createWallet().then(address => {
 }).catch(console.error);
 ```
 
-**[📖 WASM Integration Guide →](./installation#webassembly-wasm)**
+**[📖 WASM Integration Guide →](./getting-started/installation#webassembly-wasm)**
 
 </TabItem>
 </Tabs>
@@ -361,8 +361,8 @@ Before diving in, ensure you have:
 
 Ready to start building? Choose your path:
 
-1. **[Installation](./installation)** - Set up your development environment
-2. **[Essential Concepts](./concepts)** - Understand Liquid and LWK fundamentals  
-3. **[First Wallet](./first-wallet)** - Create your first working wallet
-4. **[Advanced Guides](../tutorials)** - Explore specific use cases
+1. **[Installation](./getting-started/installation)** - Set up your development environment
+2. **[Essential Concepts](./getting-started/concepts)** - Understand Liquid and LWK fundamentals  
+3. **[First Wallet](./getting-started/first-wallet)** - Create your first working wallet
+4. **[Advanced Guides](./tutorials/)** - Explore specific use cases
 

@@ -14,7 +14,7 @@ The `lwk_signer` crate provides a unified abstraction layer for transaction sign
 
 ## Overview
 
-LWK's signing architecture is built around the [`Signer`](../../../reference/api/lwk_common/trait.Signer.html) trait, which abstracts signing operations for both software and hardware implementations. The main signer types include software signers with BIP39 mnemonics and hardware wallet integration through Jade and Ledger devices.
+LWK's signing architecture is built around the `Signer` trait, which abstracts signing operations for both software and hardware implementations. The main signer types include software signers with BIP39 mnemonics and hardware wallet integration through Jade and Ledger devices.
 
 ### Key Components
 

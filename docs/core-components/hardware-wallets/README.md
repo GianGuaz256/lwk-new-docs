@@ -15,8 +15,8 @@ Hardware wallet integration in LWK offers enterprise-grade security by keeping p
 
 ### Supported Devices
 
-- **[Blockstream Jade](./jade/README.md)**: Purpose-built for Liquid with native confidential transaction support
-- **[Ledger](./ledger/README.md)**: Enterprise-grade hardware with Liquid Elements app support
+- **[Blockstream Jade](./jade.md)**: Purpose-built for Liquid with native confidential transaction support
+- **[Ledger](./ledger.md)**: Enterprise-grade hardware with Liquid Elements app support
 
 ### Key Capabilities
 

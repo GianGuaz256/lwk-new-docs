@@ -201,6 +201,6 @@ Now that you understand these essential concepts:
 
 1. **[Create Your First Wallet](./first-wallet)** - Put concepts into practice
 2. **[Core Components](../core-components)** - Deep dive into LWK architecture
-3. **[Transaction Building](../transactions)** - Learn advanced transaction patterns
-4. **[Asset Operations](../assets)** - Explore native asset capabilities
+3. **[Transaction Building](../transactions/)** - Learn advanced transaction patterns
+4. **[Asset Operations](../assets/)** - Explore native asset capabilities
 5. **[Hardware Integration](../core-components/hardware-wallets)** - Secure production setups

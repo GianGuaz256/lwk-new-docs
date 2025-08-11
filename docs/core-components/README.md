@@ -328,9 +328,9 @@ Each component provides comprehensive error handling:
 3. **[Hardware Integration](./hardware-wallets/README.md)** - Add hardware wallet support
 
 ### Advanced Topics
-- **[Multisig Workflows](../multisig/README.md)** - Complex signing scenarios
-- **[Asset Operations](../assets/README.md)** - Liquid asset management
-- **[Custom Integrations](../tutorials/README.md)** - Build custom applications
+- **[Multisig Workflows](../multisig/overview)** - Complex signing scenarios
+- **[Asset Operations](../assets/overview)** - Liquid asset management
+- **[Custom Integrations](../tutorials/single-sig-wallet)** - Build custom applications
 
 ### Integration Examples
 - **[Exchange Integration](../tutorials/exchange-integration.md)** - Server-side integration

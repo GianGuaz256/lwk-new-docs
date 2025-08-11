@@ -439,4 +439,4 @@ Now that LWK is installed, continue with:
 
 - **[Essential Concepts](./concepts)** - Learn the fundamentals
 - **[First Wallet](./first-wallet)** - Create your first wallet
-- **[Tutorials](../tutorials)** - Explore specific use cases 
+- **[Tutorials](../tutorials/)** - Explore specific use cases 

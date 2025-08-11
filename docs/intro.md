@@ -79,13 +79,13 @@ This documentation provides comprehensive guides for developers at all levels:
 
 ### For Developers
 - **[Core Components](./core-components)** - Deep dive into LWK architecture
-- **[Language Bindings](./integrations)** - Use LWK in Python, Kotlin, Swift, C#, or WASM
-- **[Tutorials](./tutorials)** - Step-by-step guides for specific use cases
+- **[Language Bindings](./core-components)** - Use LWK in Python, Kotlin, Swift, C#, or WASM
+- **[Tutorials](./tutorials/)** - Step-by-step guides for specific use cases
 
 ### For Advanced Users
 - **[CLI Reference](./cli)** - Complete command-line tool documentation
-- **[Advanced Topics](./advanced-topics)** - Multisig, assets, and complex workflows
-- **[API Reference](./reference/api)** - Detailed technical specifications
+- **[Advanced Topics](./advanced-topics/)** - Multisig, assets, and complex workflows
+- **[API Reference](./reference/)** - Detailed technical specifications
 
 ## Who Should Use LWK?
 
@@ -105,8 +105,8 @@ Ready to start building? Choose your path:
 - **[🚀 Getting Started](./getting-started)** - New to LWK? Start here
 - **[💻 Installation](./getting-started/installation)** - Set up your environment  
 - **[🏗️ Core Components](./core-components)** - Understand the architecture
-- **[🔧 Tutorials](./tutorials)** - Learn by building
-- **[📚 API Reference](./reference)** - Technical documentation
+- **[🔧 Tutorials](./tutorials/)** - Learn by building
+- **[📚 API Reference](./reference/)** - Technical documentation
 
 ---
 

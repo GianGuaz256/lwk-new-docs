@@ -753,7 +753,7 @@ curl -v ssl://electrum-liquidtestnet.blockstream.info:50002
 
 ### Getting Help
 
-- **Documentation**: [Core Components](../core-components/README)
+- **Documentation**: [Core Components](../core-components/)
 - **Examples**: [GitHub Repository](https://github.com/Blockstream/lwk)
 - **Issues**: [Report Bugs](https://github.com/Blockstream/lwk/issues)
 
