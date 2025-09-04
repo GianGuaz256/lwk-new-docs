@@ -57,7 +57,7 @@ const sidebars: SidebarsConfig = {
             'core-components/hardware-wallets/hardware-wallets-overview',
             'core-components/hardware-wallets/jade',
             'core-components/hardware-wallets/ledger',
-            'core-components/hardware-wallets/extending-hardware-wallets',
+            // 'core-components/hardware-wallets/extending-hardware-wallets',
           ],
         },
       ],
@@ -105,6 +105,7 @@ const sidebars: SidebarsConfig = {
         'blockchain-backends/blockchain-backends-overview',
         'blockchain-backends/electrum',
         'blockchain-backends/esplora',
+        'blockchain-backends/waterfalls',
       ],
     },
     // {

@@ -16,13 +16,6 @@ The `lwk_signer` crate provides a unified abstraction layer for transaction sign
 
 LWK's signing architecture is built around the `Signer` trait, which abstracts signing operations for both software and hardware implementations. The main signer types include software signers with BIP39 mnemonics and hardware wallet integration through Jade and Ledger devices.
 
-### Key Components
-
-- **SwSigner**: Software signer with BIP39 mnemonic support
-- **AnySigner**: Unified enum for all signer types (software + hardware)
-- **Signing Workflow**: PSET-based transaction signing process
-- **Hardware Integration**: Jade and Ledger device support
-
 ## Core Signer Types
 
 LWK provides two main signer categories through a unified interface:
@@ -30,67 +23,6 @@ LWK provides two main signer categories through a unified interface:
 - **Software Signers (SwSigner)**: Memory-based key management with BIP39 mnemonics
 - **Hardware Signers**: Jade and Ledger device integration via `AnySigner` enum
 - **Unified Interface**: All signers implement the same `Signer` trait for consistent APIs
-
-## Quick Start
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-use lwk_signer::{SwSigner, AnySigner};
-
-// Software signer
-let signer = SwSigner::generate(true, 0)?; // testnet, 12 words
-let any_signer = AnySigner::Software(signer);
-
-// Sign transaction
-let signed_inputs = any_signer.sign(&mut pset)?;
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-from lwk import SwSigner, AnySigner
-
-# Software signer
-signer = SwSigner.generate(is_mainnet=False, mnemonic_len=12)
-any_signer = AnySigner.software(signer)
-
-# Sign transaction
-signed_inputs = any_signer.sign(pset)
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-import com.blockstream.lwk.*
-
-// Software signer
-val signer = SwSigner.generate(isMainnet = false, mnemonicLen = 12u)
-val anySigner = AnySigner.Software(signer)
-
-// Sign transaction
-val signedInputs = anySigner.sign(pset)
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-import LiquidWalletKit
-
-// Software signer
-let signer = try SwSigner.generate(isMainnet: false, mnemonicLen: 12)
-let anySigner = AnySigner.software(signer)
-
-// Sign transaction
-let signedInputs = try anySigner.sign(pset: &pset)
-```
-
-</TabItem>
-</Tabs>
 
 ## Signing Architecture
 
@@ -129,14 +61,6 @@ pub trait Signer {
 }
 ```
 
-### Capabilities Matrix
-
-| Signer Type | Speed | Security | Mobility | Use Case |
-|-------------|-------|----------|----------|----------|
-| Software | ⚡ Fast | ⚠️ Memory-based | 📱 Portable | Development, Testing |
-| Jade | 🐌 Moderate | 🔒 Hardware Secure | 📱 Portable | Mobile, Personal |
-| Ledger | 🐌 Moderate | 🔒 Hardware Secure | 💻 Desktop | Desktop, Enterprise |
-
 ## Security Considerations
 
 ### Software Signers
@@ -150,13 +74,6 @@ pub trait Signer {
 - **Secure Element**: Private keys never leave the hardware device
 - **User Confirmation**: Physical confirmation required for transactions
 - **Device Trust**: Rely on hardware manufacturer's security implementation
-
-### Best Practices
-
-1. **Environment Separation**: Use hardware signers for production, software for development
-2. **Key Rotation**: Regularly rotate software signer mnemonics
-3. **Multisig Setup**: Combine multiple signer types for enhanced security
-4. **Secure Communication**: Ensure secure channels for hardware wallet communication
 
 ## Next Steps
 
