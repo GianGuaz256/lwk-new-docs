@@ -13,100 +13,111 @@ sidebar_position: 1
 
 </div>
 
-## Welcome to LWK
+## What is Liquid?
 
-**Liquid Wallet Kit (LWK)** is a modular collection of Rust crates designed for building robust Liquid Bitcoin wallets. LWK provides everything developers need to integrate Liquid functionality into their applications, from simple payment wallets to complex multi-signature systems and asset management platforms.
+[Liquid](https://docs.liquid.net) is a Bitcoin sidechain that extends Bitcoin with features like confidential transactions, issued assets, and faster settlement times. Think of it as Bitcoin with enhanced privacy and the ability to create custom tokens (like USDT-Liquid) while maintaining Bitcoin's security model.
 
 ## What is LWK?
 
-LWK is not a single wallet application, but rather a comprehensive **toolkit** that enables developers to build their own Liquid wallet solutions. It follows a modular architecture where each component serves a specific purpose, allowing developers to use only what they need.
+**Liquid Wallet Kit (LWK)** is a comprehensive Rust-based toolkit that lets developers build Liquid wallets and applications. Instead of building Liquid functionality from scratch, LWK provides battle-tested, modular components that handle the complex parts for you.
 
-### Key Design Principles
+**Important**: LWK is **not** a wallet itself but rather the engine that powers wallets to use Liquid.
 
-- **Modular Architecture**: Pick and choose only the components you need
-- **Watch-Only Model**: Enhanced security through separation of concerns  
-- **Multi-Language Support**: Native bindings for Python, Kotlin, Swift, C#, and WebAssembly
-- **Hardware Integration**: First-class support for Jade and Ledger devices
-- **Production Ready**: All crates are published and actively maintained
+### Key Features
+
+- **Watch-Only Wallets**: Track balances and generate addresses without storing private keys
+- **Multi-Language Support**: 
+  <img alt="Rust" src="https://img.shields.io/badge/-Rust-000000?style=flat-square&logo=rust&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="Kotlin" src="https://img.shields.io/badge/-Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white" />
+  <img alt="Swift" src="https://img.shields.io/badge/-Swift-FA7343?style=flat-square&logo=swift&logoColor=white" />
+  <img alt="C#" src="https://img.shields.io/badge/-C%23-239120?style=flat-square&logo=c-sharp&logoColor=white" />
+  <img alt="WebAssembly" src="https://img.shields.io/badge/-WebAssembly-654FF0?style=flat-square&logo=webassembly&logoColor=white" />
+- **Hardware Integration**: Built-in support for Jade and Ledger hardware wallets
+- **Asset Management**: Handle Bitcoin, USDT, and any other Liquid assets
 
 ## Core Capabilities
 
-### Wallet Operations
-- Create and manage watch-only wallets using CT descriptors
-- Generate receiving addresses with full confidential transaction support
-- Sync with Liquid blockchain via Electrum or Esplora backends
-- Build, sign, and broadcast transactions using PSET format
+```mermaid
+graph TB
+    A[LWK] --> B[Wollet]
+    A --> C[Signer]
+    A --> D[Hardware]
+    A --> E[Multisig]
+    
+    classDef default fill:#0066cc,stroke:#0066cc,color:#ffffff
+```
 
-### Asset Management
-- Issue new assets on the Liquid network
-- Reissue existing assets with proper token management
-- Burn assets permanently from circulation
-- Transfer any Liquid asset with confidential amounts
+### Wollet (Watch-Only Wallet)
+- Create and manage watch-only wallets using descriptors
+- Generate receiving addresses with privacy features
+- Sync with the Liquid blockchain and track balances
+- Handle any Liquid asset (L-BTC, USDT-Liquid, etc.)
 
-### Security Features
-- Hardware wallet integration (Jade, Ledger)
-- Multi-signature wallet support
-- Offline signing capabilities
-- Hierarchical deterministic key derivation
+### Signer
+- Build and sign transactions using PSET format
+- Software-based signing with private keys
+- Integration with hardware wallets for secure signing
+- Support for complex transaction types and asset transfers
 
-### Developer Experience
-- Command-line interface for testing and automation
-- JSON-RPC server for easy integration
-- Comprehensive language bindings
-- WebAssembly support for browser applications
+### Hardware
+- Native integration with Jade hardware wallets
+- Support for Ledger devices
+- Secure transaction signing with hardware devices
+- Multi-device support for different signing scenarios
 
-## Crate Status
-
-All LWK crates are **published on crates.io** and ready for production use:
-
-| Crate | Status | Description |
-|-------|--------|-------------|
-| `lwk_wollet` | [![Crates.io](https://img.shields.io/crates/v/lwk_wollet.svg)](https://crates.io/crates/lwk_wollet) | Watch-only wallet core |
-| `lwk_signer` | [![Crates.io](https://img.shields.io/crates/v/lwk_signer.svg)](https://crates.io/crates/lwk_signer) | Transaction signing |
-| `lwk_cli` | [![Crates.io](https://img.shields.io/crates/v/lwk_cli.svg)](https://crates.io/crates/lwk_cli) | Command-line interface |
-| `lwk_jade` | [![Crates.io](https://img.shields.io/crates/v/lwk_jade.svg)](https://crates.io/crates/lwk_jade) | Jade hardware wallet |
-| `lwk_ledger` | [![Crates.io](https://img.shields.io/crates/v/lwk_ledger.svg)](https://crates.io/crates/lwk_ledger) | Ledger hardware wallet |
-| `lwk_common` | [![Crates.io](https://img.shields.io/crates/v/lwk_common.svg)](https://crates.io/crates/lwk_common) | Common utilities |
-
-## About This Documentation
-
-This documentation provides comprehensive guides for developers at all levels:
-
-### For Beginners
-- **[Getting Started](./getting-started)** - Learn the fundamentals and create your first wallet
-- **[Installation](./getting-started/installation)** - Set up your development environment
-- **[Essential Concepts](./getting-started/concepts)** - Understand Liquid and LWK principles
-
-### For Developers
-- **[Core Components](./core-components)** - Deep dive into LWK architecture
-- **[Language Bindings](./core-components)** - Use LWK in Python, Kotlin, Swift, C#, or WASM
-- **[Tutorials](./tutorials/)** - Step-by-step guides for specific use cases
-
-### For Advanced Users
-- **[CLI Reference](./cli)** - Complete command-line tool documentation
-- **[Advanced Topics](./advanced-topics/)** - Multisig, assets, and complex workflows
-- **[API Reference](./reference/)** - Detailed technical specifications
+### Multisig
+- Create and manage multi-signature wallets
+- Support for various threshold configurations (2-of-3, 3-of-5, etc.)
+- Hardware wallet integration for multisig signing
+- Enterprise-grade security for treasury management
 
 ## Who Should Use LWK?
 
-LWK is designed for developers building:
+```mermaid
+graph TB
+    A[LWK] --> B[Exchange]
+    A --> C[Wallet]
+    A --> D[Multisig]
+    
+    classDef default fill:#0066cc,stroke:#0066cc,color:#ffffff
+```
 
-- **Mobile Wallets**: iOS and Android applications using Swift/Kotlin bindings
-- **Web Applications**: Browser-based wallets with WebAssembly support
-- **Exchange Integration**: Trading platforms requiring Liquid asset support
-- **Enterprise Solutions**: Multi-signature wallets and treasury management
-- **Asset Issuers**: Applications for creating and managing Liquid tokens
-- **Hardware Wallet Apps**: Secure applications leveraging Jade or Ledger devices
+### Exchange
+Building a cryptocurrency exchange that needs Liquid asset support? LWK provides:
+- **Watch-Only Wallets**: Track user deposits without storing private keys
+- **Asset Support**: Handle L-BTC, USDT-Liquid, and other issued assets
+- **Batch Processing**: Efficiently process multiple transactions
+- **Hot/Cold Separation**: Keep signing keys offline for security
+- **Hardware Integration**: Use hardware wallets for cold storage signing
+
+### Wallet
+Creating mobile or web wallets for end users? LWK offers:
+- **Cross-Platform**: Use the same codebase on iOS, Android, and web
+- **Privacy**: Built-in confidential transactions for user privacy
+- **Hardware Support**: Let users secure funds with Jade or Ledger devices
+- **Simple APIs**: Abstract complex Liquid concepts behind easy-to-use interfaces
+- **Asset Management**: Support any Liquid asset with unified wallet experience
+
+### Multisig
+Need secure multi-signature setups for treasury or enterprise use? LWK enables:
+- **Flexible Thresholds**: Configure 2-of-3, 3-of-5, or any M-of-N setup
+- **Hardware Signing**: Each signer can use their own Jade or Ledger device
+- **Policy Enforcement**: Require multiple approvals for transactions
+- **Enterprise Security**: Perfect for company treasuries holding USDT-Liquid
+- **Audit Trail**: Complete transaction history and compliance reporting
+
+**Example**: A company treasury holding USDT-Liquid in a 2-of-3 multisig where any two executives must approve transactions using their Jade hardware wallets.
 
 ## Quick Navigation
 
 Ready to start building? Choose your path:
 
-- **[🚀 Getting Started](./getting-started)** - New to LWK? Start here
-- **[💻 Installation](./getting-started/installation)** - Set up your environment  
-- **[🏗️ Core Components](./core-components)** - Understand the architecture
-- **[🔧 Tutorials](./tutorials/)** - Learn by building
-- **[📚 API Reference](./reference/)** - Technical documentation
+- **[Getting Started](./getting-started)** - New to LWK? Start here
+- **[Installation](./getting-started/installation)** - Set up your environment  
+- **[Core Components](./core-components)** - Understand the architecture
+- **[Tutorials](./tutorials/)** - Learn by building
+- **[API Reference](./reference/)** - Technical documentation
 
 ---
 

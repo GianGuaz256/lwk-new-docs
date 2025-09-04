@@ -174,33 +174,42 @@ Multisig transactions require multiple signatures from different participants. T
 
 ## Asset Management
 
-Liquid supports native asset issuance and management alongside L-BTC. This enables complex financial applications and tokenization use cases.
+Liquid supports native asset issuance and management alongside L-BTC, enabling both permissionless and compliant financial applications with full confidentiality.
 
 ### Asset Types
 
+The Liquid network supports two primary asset categories:
+
+#### Standard Assets
+Standard assets are permissionless and can be transferred freely without enforced restrictions:
+
 - **L-BTC**: The native currency, pegged 1:1 with Bitcoin
-- **Issued Assets**: Custom tokens created on the network
-- **Reissuance Tokens**: Special tokens that allow creating more units of an asset
+- **USDT**: Tether's stablecoin on Liquid
+- **Other Issued Assets**: Custom tokens with no transfer restrictions
 
-### Asset Operations
+These assets operate like traditional cryptocurrencies with Liquid's privacy benefits.
 
-| Operation | Description | Use Case |
-|-----------|-------------|----------|
-| **Issuance** | Create new asset | Initial token creation |
-| **Reissuance** | Mint additional units | Controlled supply expansion |
-| **Burning** | Permanently destroy units | Supply reduction |
-| **Transfer** | Send between addresses | Standard transactions |
+#### AMP Assets (Asset Management Platform)
+AMP assets are compliance-focused assets issued by central authorities and distributed to investors. They enforce specific rules to meet regulatory requirements:
+
+- **Whitelist/Blacklist Controls**: Restrict who can hold or transfer the asset
+- **Freeze Capabilities**: Issuers can freeze specific wallets or UTXOs
+- **Compliance Enforcement**: Built-in regulatory compliance mechanisms
+
+AMP assets enable traditional finance applications to operate on Liquid while maintaining the network's confidential transaction benefits.
 
 ### Asset Registry
 
-The Liquid network maintains an asset registry that maps asset IDs to human-readable names and metadata. This helps users identify assets in their wallets and applications.
+The Liquid network maintains an [open-source asset registry](https://github.com/Blockstream/asset_registry_db) that maps asset IDs to human-readable names and metadata. This registry is used by wallets, block explorers, and other Liquid services to display asset information to users.
+
+The registry provides standardized asset metadata including names, tickers, and issuer information. For more details on asset registration and domain verification, see the [Blockstream Liquid Asset Registry documentation](https://docs.liquid.net/docs/blockstream-liquid-asset-registry).
 
 ## Next Steps
 
 Now that you understand these essential concepts:
 
-1. **[Create Your First Wallet](./first-wallet)** - Put concepts into practice
-2. **[Core Components](../core-components)** - Deep dive into LWK architecture
-3. **[Transaction Building](../transactions/)** - Learn advanced transaction patterns
-4. **[Asset Operations](../assets/)** - Explore native asset capabilities
-5. **[Hardware Integration](../core-components/hardware-wallets)** - Secure production setups
+- **[Create Your First Wallet](./first-wallet)** - Put concepts into practice
+- **[Core Components](../core-components)** - Deep dive into LWK architecture
+- **[Transaction Building](../transactions/)** - Learn advanced transaction patterns
+- **[Asset Operations](../assets/)** - Explore native asset capabilities
+- **[Hardware Integration](../core-components/hardware-wallets)** - Secure production setups

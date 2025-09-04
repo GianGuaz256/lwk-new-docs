@@ -93,6 +93,41 @@ try wollet.applyUpdate(update: update)
 ```
 
 </TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+import { Wollet, WolletDescriptor, Network, EsploraClient } from 'lwk-wasm';
+
+// Create wallet from CT descriptor
+const descriptor = new WolletDescriptor("ct(slip77(master_blinding_key),wpkh(xpub/0/*))")
+const wollet = new Wollet(Network.testnet(), null, descriptor)
+
+// Generate address and sync
+const address = wollet.address()
+const esploraClient = new EsploraClient(Network.testnet(), "https://blockstream.info/liquidtestnet/api", false, 1, false)
+const update = await esploraClient.fullScan(wollet)
+if (update) {
+    wollet.applyUpdate(update)
+}
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using LiquidWalletKit;
+
+// Create wallet from CT descriptor
+var descriptor = new WolletDescriptor("ct(slip77(master_blinding_key),wpkh(xpub/0/*))");
+var wollet = new Wollet(Network.LiquidTestnet, null, descriptor);
+
+// Generate address and sync
+var address = wollet.Address();
+var update = electrumClient.FullScan(wollet, 20);
+wollet.ApplyUpdate(update);
+```
+
+</TabItem>
 </Tabs>
 
 ## Core Architecture
@@ -100,24 +135,53 @@ try wollet.applyUpdate(update: update)
 ### Wallet Structure
 
 ```mermaid
-graph TB
-    subgraph "Wollet Core"
-        W[Wollet] --> D[WolletDescriptor]
-        W --> S[Store]
-        W --> P[Persister]
-        W --> C[Config]
+graph TD
+    subgraph "🌐 Blockchain Backends"
+        ELEC["⚡ Electrum<br/>Lightweight Protocol"]
+        ESP["🌍 Esplora<br/>REST API"]
+        WATER["🌊 Waterfalls<br/>Optimized Scanning"]
     end
     
-    subgraph "External Dependencies"
-        BC[Blockchain Client]
-        TB[TxBuilder]
+    subgraph "🏦 Wollet Core"
+        W["📱 Wollet<br/>Watch-Only Wallet"]
     end
     
-    W --> BC
+    subgraph "📋 Core Components"
+        D["📋 WolletDescriptor<br/>CT Descriptor + Blinding Key"]
+        S["💾 Store<br/>In-Memory State<br/>Transactions & UTXOs"]
+        P["🗂️ Persister<br/>Optional Storage<br/>NoPersist | FsPersister"]
+        C["⚙️ Config<br/>Network Settings<br/>Validation Rules"]
+    end
+    
+    subgraph "🔧 Transaction Operations"
+        TB["🏗️ TxBuilder<br/>PSET Creation<br/>Asset Operations"]
+    end
+    
+    ELEC -.->|"Updates"| W
+    ESP -.->|"Updates"| W
+    WATER -.->|"Updates"| W
+    
+    W --> D
+    W --> S
+    W --> P
+    W --> C
+    
     W --> TB
+    TB -.->|"PSETs"| W
     
-    BC --> |Updates| W
-    TB --> |PSETs| W
+    style W fill:#e1f5fe,stroke:#01579b,stroke-width:4px
+    style D fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style S fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    style P fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style C fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    style ELEC fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    style ESP fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    style WATER fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    style TB fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    
+    click ELEC "https://github.com/romanz/electrs" "Electrum Server Implementation"
+    click ESP "https://github.com/Blockstream/esplora" "Esplora Block Explorer API"
+    click WATER "https://github.com/RCasatta/waterfalls" "Waterfalls Optimized Backend"
 ```
 
 The Wollet consists of:
@@ -135,22 +199,13 @@ The Wollet consists of:
 4. **Transaction Building**: Create PSETs for various operations
 5. **State Management**: Persist wallet state for future sessions
 
-## Integration Patterns
+### Blockchain Backend Support
 
-### Backend Integration
+Wollet supports multiple blockchain backends for synchronization:
 
-Wollet supports multiple blockchain backends:
-
-- **Electrum**: Efficient, lightweight backend for most applications
-- **Esplora**: REST API backend for web integrations
-
-### Transaction Building
-
-Use the `TxBuilder` for creating various transaction types:
-
-- **Simple Transfers**: L-BTC and asset transfers
-- **Asset Operations**: Issuance, reissuance, and burn transactions
-- **Multi-Output**: Complex transactions with multiple recipients
+- **[Electrum](https://github.com/romanz/electrs)**: Efficient, lightweight protocol ideal for most applications
+- **[Esplora](https://github.com/Blockstream/esplora)**: REST API backend perfect for web integrations  
+- **[Waterfalls](https://github.com/RCasatta/waterfalls)**: Optimized scanning backend that provides enhanced performance for wallet synchronization with specialized endpoints for descriptor-based wallets
 
 ## Next Steps
 

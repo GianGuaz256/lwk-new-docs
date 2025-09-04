@@ -74,19 +74,19 @@ const sidebars: SidebarsConfig = {
         'transactions/finalization',
       ],
     },
-    {
-      type: 'category',
-      label: 'Assets (Coming Soon)',
-      items: [
-        'assets/assets-overview',
-        'assets/issuance',
-        'assets/reissuance',
-        'assets/burning',
-        'assets/contracts',
-        'assets/registry',
-        'assets/amp2',
-      ],
-    },
+    // {
+    //   type: 'category',
+    //   label: 'Assets',
+    //   items: [
+    //     'assets/assets-overview',
+    //     'assets/issuance',
+    //     'assets/reissuance',
+    //     'assets/burning',
+    //     'assets/contracts',
+    //     'assets/registry',
+    //     'assets/amp2',
+    //   ],
+    // },
     {
       type: 'category',
       label: 'Multisig',
@@ -107,19 +107,19 @@ const sidebars: SidebarsConfig = {
         'blockchain-backends/esplora',
       ],
     },
-    {
-      type: 'category',
-      label: 'Advanced Topics (Coming Soon)',
-      items: [
-        'advanced-topics/liquidex',
-        'advanced-topics/pegins',
-        'advanced-topics/covenants',
-        'advanced-topics/swaps',
-        'advanced-topics/privacy',
-        'advanced-topics/performance-optimization',
-        'advanced-topics/custom-descriptors',
-      ],
-    },
+    // {
+    //   type: 'category',
+    //   label: 'Advanced Topics',
+    //   items: [
+    //     'advanced-topics/liquidex',
+    //     'advanced-topics/pegins',
+    //     'advanced-topics/covenants',
+    //     'advanced-topics/swaps',
+    //     'advanced-topics/privacy',
+    //     'advanced-topics/performance-optimization',
+    //     'advanced-topics/custom-descriptors',
+    //   ],
+    // },
     {
       type: 'category',
       label: 'CLI',
@@ -134,25 +134,25 @@ const sidebars: SidebarsConfig = {
         'cli/scripting',
       ],
     },
-    {
-      type: 'category',
-      label: 'Deployment (Coming Soon)',
-      items: [
-        'deployment/production-considerations',
-        'deployment/security-checklist',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Reference (Coming Soon)',
-      items: [
-        'reference/cli-reference',
-        'reference/error-codes',
-        'reference/configuration-reference',
-        'reference/glossary',
-        'reference/changelog',
-      ],
-    },
+    // {
+    //   type: 'category',
+    //   label: 'Deployment',
+    //   items: [
+    //     'deployment/production-considerations',
+    //     'deployment/security-checklist',
+    //   ],
+    // },
+    // {
+    //   type: 'category',
+    //   label: 'Reference',
+    //   items: [
+    //     'reference/cli-reference',
+    //     'reference/error-codes',
+    //     'reference/configuration-reference',
+    //     'reference/glossary',
+    //     'reference/changelog',
+    //   ],
+    // },
   ],
 };
 

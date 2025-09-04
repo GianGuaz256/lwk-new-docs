@@ -53,6 +53,24 @@ let addr = try wollet.address(index: .peek(5))  // Specific index
 ```
 
 </TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+const addr = wollet.address(null); // Next available
+const addr = wollet.address(AddressIndex.new()); // Force new
+const addr = wollet.address(AddressIndex.peek(5)); // Specific index
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+var addr = wollet.Address(null); // Next available
+var addr = wollet.Address(AddressIndex.New); // Force new
+var addr = wollet.Address(AddressIndex.Peek(5)); // Specific index
+```
+
+</TabItem>
 </Tabs>
 
 ### Change Addresses
@@ -83,6 +101,20 @@ val changeAddr = wollet.changeAddress(null)
 
 ```swift
 let changeAddr = try wollet.changeAddress(index: nil)
+```
+
+</TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+const changeAddr = wollet.changeAddress(null);
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+var changeAddr = wollet.ChangeAddress(null);
 ```
 
 </TabItem>
@@ -145,6 +177,26 @@ let blindingKey = addrResult.blindingKey()  // For unblinding
 ```
 
 </TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+// Get address with blinding info
+const addrResult = wollet.address(null);
+const address = addrResult.address();      // Liquid address
+const blindingKey = addrResult.blindingKey();  // For unblinding
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+// Get address with blinding info
+var addrResult = wollet.Address(null);
+var address = addrResult.Address();      // Liquid address
+var blindingKey = addrResult.BlindingKey();  // For unblinding
+```
+
+</TabItem>
 </Tabs>
 
 ## Index Management
@@ -155,11 +207,65 @@ let blindingKey = addrResult.blindingKey()  // For unblinding
 - Configurable during sync operations
 
 ### Address Discovery
+
+<Tabs groupId="language">
+<TabItem value="rust" label="Rust" default>
+
 ```rust
 // Full scan with gap limit
 let update = electrum_client.full_scan(&wollet, stop_gap: 20, parallel_requests: 10)?;
 wollet.apply_update(update)?;
 ```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+# Full scan with gap limit
+update = electrum_client.full_scan(wollet, stop_gap=20, parallel_requests=10)
+wollet.apply_update(update)
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin">
+
+```kotlin
+// Full scan with gap limit
+val update = electrumClient.fullScan(wollet, stopGap = 20u, parallelRequests = 10u)
+wollet.applyUpdate(update)
+```
+
+</TabItem>
+<TabItem value="swift" label="Swift">
+
+```swift
+// Full scan with gap limit
+let update = try electrumClient.fullScan(wollet: wollet, stopGap: 20, parallelRequests: 10)
+try wollet.applyUpdate(update: update)
+```
+
+</TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+// Full scan with gap limit
+const update = await electrumClient.fullScan(wollet, 20, 10);
+if (update) {
+    wollet.applyUpdate(update);
+}
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+// Full scan with gap limit
+var update = electrumClient.FullScan(wollet, stopGap: 20, parallelRequests: 10);
+wollet.ApplyUpdate(update);
+```
+
+</TabItem>
+</Tabs>
 
 ## Best Practices
 
@@ -170,10 +276,71 @@ wollet.apply_update(update)?;
 
 ## Address Validation
 
+<Tabs groupId="language">
+<TabItem value="rust" label="Rust" default>
+
 ```rust
 use elements::Address;
 
 // Parse and validate address
 let addr = Address::from_str("lq1qq...")?;
 assert!(addr.is_blinded()); // Check if confidential
-``` 
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+from lwk import Address
+
+# Parse and validate address
+addr = Address.from_str("lq1qq...")
+assert addr.is_blinded()  # Check if confidential
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin">
+
+```kotlin
+import com.blockstream.lwk.Address
+
+// Parse and validate address
+val addr = Address.fromStr("lq1qq...")
+assert(addr.isBlinded()) // Check if confidential
+```
+
+</TabItem>
+<TabItem value="swift" label="Swift">
+
+```swift
+import LiquidWalletKit
+
+// Parse and validate address
+let addr = try Address(address: "lq1qq...")
+assert(addr.isBlinded()) // Check if confidential
+```
+
+</TabItem>
+<TabItem value="wasm" label="WASM">
+
+```javascript
+import { Address } from 'lwk-wasm';
+
+// Parse and validate address
+const addr = Address.fromStr("lq1qq...");
+console.assert(addr.isBlinded()); // Check if confidential
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using LiquidWalletKit;
+
+// Parse and validate address
+var addr = Address.FromStr("lq1qq...");
+Debug.Assert(addr.IsBlinded()); // Check if confidential
+```
+
+</TabItem>
+</Tabs> 
