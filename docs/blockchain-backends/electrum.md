@@ -8,7 +8,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Electrum Server Integration
+# Electrum
 
 Electrum provides a persistent TCP connection to blockchain data with real-time subscriptions and efficient binary protocol communication. It's ideal for applications requiring live updates and frequent synchronization.
 
@@ -187,97 +187,6 @@ let client = try ElectrumClient(
 </TabItem>
 </Tabs>
 
-## Wallet Synchronization
-
-### Full Wallet Scan
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-// Perform full wallet scan
-let update = client.full_scan(&wollet)?;
-
-match update {
-    Some(update) => {
-        println!("Found {} new transactions", update.new_txs.len());
-        
-        // Apply the update to the wallet
-        wollet.apply_update(update)?;
-        
-        // Check updated balance
-        let balance = wollet.balance()?;
-        println!("Current L-BTC balance: {} sats", balance.btc_balance());
-    }
-    None => {
-        println!("Wallet is already up to date");
-    }
-}
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-# Perform full wallet scan
-update = client.full_scan(wollet)
-
-if update:
-    print(f"Found {len(update.new_txs)} new transactions")
-    
-    # Apply the update to the wallet
-    wollet.apply_update(update)
-    
-    # Check updated balance
-    balance = wollet.balance()
-    print(f"Current L-BTC balance: {balance.btc_balance()} sats")
-else:
-    print("Wallet is already up to date")
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-// Perform full wallet scan
-val update = client.fullScan(wollet)
-
-update?.let {
-    println("Found ${it.newTxs.size} new transactions")
-    
-    // Apply the update to the wallet
-    wollet.applyUpdate(it)
-    
-    // Check updated balance
-    val balance = wollet.balance()
-    println("Current L-BTC balance: ${balance.btcBalance()} sats")
-} ?: println("Wallet is already up to date")
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-// Perform full wallet scan
-let update = try client.fullScan(wollet)
-
-if let update = update {
-    print("Found \(update.newTxs.count) new transactions")
-    
-    // Apply the update to the wallet
-    try wollet.applyUpdate(update)
-    
-    // Check updated balance
-    let balance = try wollet.balance()
-    print("Current L-BTC balance: \(balance.btcBalance()) sats")
-} else {
-    print("Wallet is already up to date")
-}
-```
-
-</TabItem>
-</Tabs>
-
 ## Transaction Broadcasting
 
 <Tabs groupId="language">
@@ -445,18 +354,6 @@ while true {
 
 </TabItem>
 </Tabs>
-
-## Key Advantages
-
-**Real-time Subscriptions**: Immediate notifications when blocks are found or relevant transactions appear.
-
-**Persistent Connections**: Maintains connection state, reducing overhead for frequent operations.
-
-**Binary Protocol**: More efficient than JSON, reducing bandwidth usage by 30-50%.
-
-**Batch Operations**: Supports fetching multiple transactions in a single request.
-
-**Wide Compatibility**: Electrum protocol is widely supported across many server implementations.
 
 ## External Resources
 

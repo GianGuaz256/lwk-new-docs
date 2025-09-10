@@ -374,159 +374,7 @@ let esploraClient = try EsploraClient(
 </TabItem>
 </Tabs>
 
-## Synchronization Strategies
-
-### Full Scan (Initial Sync)
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-// Full scan with gap limit
-let update = client.full_scan(&wollet)?;
-if let Some(update) = update {
-    wollet.apply_update(update)?;
-    println!("Discovered {} new transactions", update.new_txs.len());
-}
-
-// Check sync status
-let balance = wollet.balance()?;
-println!("L-BTC balance: {} sats", balance.btc_balance());
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-# Full scan with gap limit
-update = client.full_scan(wollet)
-if update:
-    wollet.apply_update(update)
-    print(f"Discovered {len(update.new_txs)} new transactions")
-
-# Check sync status
-balance = wollet.balance()
-print(f"L-BTC balance: {balance.btc_balance()} sats")
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-// Full scan with gap limit
-val update = client.fullScan(wollet)
-update?.let {
-    wollet.applyUpdate(it)
-    println("Discovered ${it.newTxs.size} new transactions")
-}
-
-// Check sync status
-val balance = wollet.balance()
-println("L-BTC balance: ${balance.btcBalance()} sats")
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-// Full scan with gap limit
-let update = try client.fullScan(wollet)
-if let update = update {
-    try wollet.applyUpdate(update)
-    print("Discovered \(update.newTxs.count) new transactions")
-}
-
-// Check sync status
-let balance = try wollet.balance()
-print("L-BTC balance: \(balance.btcBalance()) sats")
-```
-
-</TabItem>
-</Tabs>
-
-### Incremental Sync
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-// Incremental sync (only new transactions since last sync)
-let update = client.sync(&wollet, 20)?; // gap limit 20
-if let Some(update) = update {
-    if !update.new_txs.is_empty() {
-        wollet.apply_update(update)?;
-        println!("Found new transactions");
-    } else {
-        println!("Wallet is up to date");
-    }
-}
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-# Incremental sync (only new transactions since last sync)
-update = client.sync(wollet, 20)  # gap limit 20
-if update and update.new_txs:
-    wollet.apply_update(update)
-    print("Found new transactions")
-else:
-    print("Wallet is up to date")
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-// Incremental sync (only new transactions since last sync)
-val update = client.sync(wollet, 20)  // gap limit 20
-if (update != null && update.newTxs.isNotEmpty()) {
-    wollet.applyUpdate(update)
-    println("Found new transactions")
-} else {
-    println("Wallet is up to date")
-}
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-// Incremental sync (only new transactions since last sync)
-let update = try client.sync(wollet, gapLimit: 20)
-if let update = update, !update.newTxs.isEmpty {
-    try wollet.applyUpdate(update)
-    print("Found new transactions")
-} else {
-    print("Wallet is up to date")
-}
-```
-
-</TabItem>
-</Tabs>
-
 ## Backend Selection Guidelines
-
-**Choose Electrum when:**
-- Building desktop applications with persistent connections
-- Need real-time transaction notifications
-- Want lower bandwidth usage for frequent syncing
-- Can manage TCP connectivity and connection state
-
-**Choose Esplora when:**
-- Building web applications or mobile apps
-- Working behind corporate firewalls/proxies
-- Need simple HTTP-based integration
-- Prefer stateless, cacheable requests
-- Building microservices or serverless applications
-
-**Choose Waterfalls when:**
-- Initial wallet synchronization with large transaction history
-- Performance-critical applications requiring fast scanning
-- High-volume wallet operations (exchanges, payment processors)
-- Applications with thousands of addresses to monitor
-- Need privacy with descriptor encryption
 
 **For development:**
 - Use Esplora for quick prototyping and testing
@@ -544,3 +392,9 @@ if let update = update, !update.newTxs.isEmpty {
 | 6000+ txs | ~1800s | ~1500s | ~12s | **125x faster** |
 
 *Results based on real-world testing. Actual performance may vary based on network conditions and server load.*
+
+## Next Steps
+
+- [Electrum](./electrum.md) - TCP-based backend
+- [Esplora](./esplora.md) - HTTP REST API backend
+- [Waterfalls](./waterfalls.md) - Optimized Esplora backend

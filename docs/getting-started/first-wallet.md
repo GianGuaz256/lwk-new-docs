@@ -2,13 +2,13 @@
 id: first-wallet
 title: Create Your First Wallet
 sidebar_label: First Wallet
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Create Your First Wallet
+# First Wallet
 
 Now that you understand the [essential concepts](./concepts) and have [LWK installed](./installation), let's create your first working Liquid wallet. This tutorial covers the core workflow in each supported programming language.
 

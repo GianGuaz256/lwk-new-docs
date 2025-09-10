@@ -46,52 +46,34 @@ graph TB
 
 The foundational component for wallet operations, handling everything except private keys.
 
-**Key Responsibilities:**
+**Primary Use Cases:**
 - Descriptor-based wallet creation and management
 - Address generation and derivation
 - Balance tracking across all assets
 - Transaction building and PSET creation
 - Blockchain synchronization via Electrum/Esplora
 
-**Primary Use Cases:**
-- Creating wallets from CT descriptors
-- Generating addresses for receiving funds
-- Monitoring wallet balances and transaction history
-- Building transactions for various operations
-
 ### [Signer - Transaction Signing](./signer/README.md)
 
 Unified abstraction layer for all signing operations, supporting both software and hardware signers.
 
-**Key Responsibilities:**
+**Primary Use Cases:**
 - Software signer with BIP39 mnemonic support
 - Hardware wallet integration (Jade, Ledger)
 - PSET-based transaction signing
 - Multi-signature coordination
 - Key derivation and management
 
-**Primary Use Cases:**
-- Signing transactions with software keys
-- Coordinating hardware wallet signing
-- Managing multisig signing workflows
-- Deriving extended public keys
-
 ### [Hardware Wallets - Secure Signing](./hardware-wallets/README.md)
 
 Enterprise-grade security through dedicated hardware devices with comprehensive Liquid support.
 
-**Key Responsibilities:**
+**Primary Use Cases:**
 - Jade and Ledger device integration
 - Secure transaction signing with user confirmation
 - Multisig wallet registration
 - Address verification on device
 - Asset operation support
-
-**Primary Use Cases:**
-- Production-grade transaction signing
-- Multisig wallet setup and coordination
-- Address verification for enhanced security
-- Asset issuance and management operations
 
 ## Integration Patterns
 

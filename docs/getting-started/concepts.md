@@ -2,12 +2,12 @@
 id: concepts
 title: Essential Concepts
 sidebar_label: Concepts
-sidebar_position: 4
+sidebar_position: 3
 ---
 
-# Essential LWK Concepts
+# LWK Concepts
 
-Understanding these core concepts is crucial for building successful Liquid applications with LWK. This guide explains the key technologies and patterns that make LWK powerful.
+Before you jump right into the code, understanding the underlying Liquid network and its core concepts is crucial for building secure and efficient applications. This guide explains the key technologies and patterns that make Liquid and LWK powerful.
 
 ## Liquid Network Fundamentals
 
@@ -58,7 +58,7 @@ The blinding key component handles the cryptographic blinding required for confi
 | Pattern | Description | Use Case |
 |---------|-------------|----------|
 | `elwpkh()` | Single-key P2WPKH | Personal wallets |
-| `elwsh()` | Multi-signature | Corporate/shared wallets |
+| `elwsh()` | Multi-signature | Shared wallets |
 | `slip77()` | SLIP-77 blinding key | Standard privacy |
 | `eltr()` | Taproot outputs | Advanced scripts |
 
@@ -155,22 +155,12 @@ However, it cannot sign transactions - this requires a separate signer component
 
 LWK supports multiple signing approaches to accommodate different security requirements, from development environments to high-security production systems.
 
-### Software Signing
+This include:
+- Software signers, which store private keys in memory or encrypted storage,
+- Hardware signers, which store private keys on dedicated secure hardware,
+- Multisig signers, which require multiple signatures from different participants.
 
-Software signers store private keys in memory or encrypted storage. They're suitable for:
-- Development and testing
-- Consumer applications with appropriate key protection
-- Scenarios where convenience is prioritized
-
-### Hardware Signing
-
-Hardware wallets store private keys on dedicated secure hardware. Benefits include:
-- Private keys never leave the device
-- Tamper-resistant hardware security
-- User confirmation for all operations
-- Suitable for high-value operations
-
-Multisig transactions require multiple signatures from different participants. The PSET format enables this by allowing partial signatures to be collected and combined before finalization.
+The PSET format enables this by allowing partial signatures to be collected and combined before finalization.
 
 ## Asset Management
 
@@ -192,9 +182,9 @@ These assets operate like traditional cryptocurrencies with Liquid's privacy ben
 #### AMP Assets (Asset Management Platform)
 AMP assets are compliance-focused assets issued by central authorities and distributed to investors. They enforce specific rules to meet regulatory requirements:
 
+- **Issue, Reissue, Burn**: Issuers can issue, reissue and burn assets having full control over the asset's lifecycle
 - **Whitelist/Blacklist Controls**: Restrict who can hold or transfer the asset
 - **Freeze Capabilities**: Issuers can freeze specific wallets or UTXOs
-- **Compliance Enforcement**: Built-in regulatory compliance mechanisms
 
 AMP assets enable traditional finance applications to operate on Liquid while maintaining the network's confidential transaction benefits.
 

@@ -20,8 +20,8 @@ const sidebars: SidebarsConfig = {
       items: [
         'getting-started',
         'getting-started/installation',
-        'getting-started/first-wallet',
         'getting-started/concepts',
+        'getting-started/first-wallet',
       ],
     },
     {
@@ -60,6 +60,15 @@ const sidebars: SidebarsConfig = {
             // 'core-components/hardware-wallets/extending-hardware-wallets',
           ],
         },
+        {
+          type: 'category',
+          label: 'Multisig',
+          items: [
+            'core-components/multisig/multisig-overview',
+            'core-components/multisig/descriptor-creation',
+            'core-components/multisig/registration',
+          ],
+        },
       ],
     },
     {
@@ -74,27 +83,13 @@ const sidebars: SidebarsConfig = {
         'transactions/finalization',
       ],
     },
-    // {
-    //   type: 'category',
-    //   label: 'Assets',
-    //   items: [
-    //     'assets/assets-overview',
-    //     'assets/issuance',
-    //     'assets/reissuance',
-    //     'assets/burning',
-    //     'assets/contracts',
-    //     'assets/registry',
-    //     'assets/amp2',
-    //   ],
-    // },
     {
       type: 'category',
-      label: 'Multisig',
+      label: 'AMP Assets',
       items: [
-        'multisig/multisig-overview',
-        'multisig/descriptor-creation',
-        'multisig/registration',
-        'multisig/transaction-flow',
+        'amp-assets/amp-assets-overview',
+        'amp-assets/receive-monitor',
+        'amp-assets/send',
       ],
     },
     

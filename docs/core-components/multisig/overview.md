@@ -14,6 +14,8 @@ Multisig (M-of-N) wallets require multiple signatures to authorize transactions,
 
 ## Multisig Architecture
 
+// I want a diagram that shows the multisig setup using sequence diagram
+
 ```mermaid
 graph TB
     A[Multisig Wallet 2-of-3] --> B[Signer 1<br/>Software]
@@ -25,14 +27,6 @@ graph TB
     G --> H[Combine Signatures]
     H --> I[Broadcast]
 ```
-
-### Common Configurations
-
-| Configuration | Use Case | Security vs Convenience |
-|---------------|----------|------------------------|
-| 2-of-2 | Joint custody, partnerships | High security, both parties required |
-| 2-of-3 | Personal/small business | Good balance, backup key available |
-| 3-of-5 | Corporate treasury | High security, multiple approvers |
 
 ## Supported Signer Types
 

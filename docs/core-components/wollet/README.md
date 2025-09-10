@@ -184,21 +184,6 @@ graph TD
     click WATER "https://github.com/RCasatta/waterfalls" "Waterfalls Optimized Backend"
 ```
 
-The Wollet consists of:
-
-- **WolletDescriptor**: Defines the wallet's address derivation and blinding key
-- **Store**: In-memory state containing transactions, UTXOs, and balances
-- **Persister**: Interface for saving/loading wallet state (optional)
-- **Config**: Network configuration and validation settings
-
-### Data Flow
-
-1. **Initialization**: Parse descriptor and create wallet instance
-2. **Synchronization**: Fetch blockchain data and apply updates
-3. **Address Generation**: Derive addresses from descriptor
-4. **Transaction Building**: Create PSETs for various operations
-5. **State Management**: Persist wallet state for future sessions
-
 ### Blockchain Backend Support
 
 Wollet supports multiple blockchain backends for synchronization:

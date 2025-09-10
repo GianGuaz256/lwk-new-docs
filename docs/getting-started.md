@@ -10,57 +10,37 @@ import TabItem from '@theme/TabItem';
 
 # Getting Started with LWK
 
-Welcome to **Liquid Wallet Kit (LWK)** - the comprehensive toolkit for building Liquid Bitcoin wallets. LWK provides everything you need to create robust, secure, and feature-rich Liquid applications.
-
-## What is LWK?
-
-LWK is a modular collection of Rust crates designed for Liquid Bitcoin wallet development. Unlike monolithic solutions, LWK's modular architecture lets you pick exactly the components you need for your specific use case.
-
-## Core Use Cases
-
-```mermaid
-graph TB
-    subgraph "LWK Use Cases"
-        A["Mobile Wallets<br/>iOS/Android Apps"] 
-        B["Web Applications<br/>Browser-based Wallets"]
-        C["Exchange Integration<br/>Trading Platforms"]
-        D["Asset Issuers<br/>Token Management"]
-        E["Multisig Solutions<br/>Corporate Wallets"]
-        F["Hardware Wallet Apps<br/>Jade/Ledger Integration"]
-    end
-    
-    subgraph "LWK Components"
-        G["lwk_wollet<br/>Watch-only Wallets"]
-        H["lwk_signer<br/>Transaction Signing"]
-        I["lwk_bindings<br/>Multi-language Support"]
-        J["lwk_jade<br/>Hardware Integration"]
-        K["lwk_cli<br/>Command Line Tool"]
-    end
-    
-    A --> G
-    A --> H
-    A --> I
-    B --> G
-    B --> I
-    C --> G
-    C --> H
-    D --> G
-    D --> H
-    E --> G
-    E --> H
-    F --> J
-    F --> H
-```
+Welcome to **Liquid Wallet Kit (LWK)** - the comprehensive toolkit for building Liquid Bitcoin wallets. LWK provides everything you need to create robust, secure, and feature-rich Liquid applications. Unlike monolithic solutions, LWK's modular architecture lets you pick exactly the components you need for your specific use case.
 
 ## Key Features
 
 - **Watch-Only Wallets**: Create wallets using [CT descriptors](https://github.com/ElementsProject/ELIPs/blob/main/elip-0150.mediawiki) without needing private keys
 - **PSET-Based**: Built around [Partially Signed Elements Transactions](https://github.com/ElementsProject/elements/blob/master/doc/pset.mediawiki) for flexible transaction workflows
 - **Multi-Language**: Python, Kotlin, Swift, C#, WebAssembly bindings via [UniFFI](https://mozilla.github.io/uniffi-rs/)
-- **Multiple Backends**: Support for Electrum and Esplora servers - no need for full node
-- **Asset Management**: Issue, reissue, and burn Liquid assets with ease
+- **Multiple Backends**: Support for [Electrum](https://electrum.readthedocs.io/en/latest/), [Esplora](https://github.com/Blockstream/esplora) and [Waterfalls](https://github.com/RCasatta/waterfalls) servers - no need for full node
+- **Asset Management**: Manage both [Liquid assets](https://liquid.net/) and [AMP0 assets](https://blockstream.com/amp/) with ease
 - **Multisig Support**: Create wallets with any combination of hardware/software signers
 - **Hardware Integration**: Native support for Jade and Ledger devices
+
+## Core Workflow
+
+Every LWK application follows this fundamental pattern:
+
+```mermaid
+graph LR
+    A["Create Wallet<br/>with CT Descriptor"] --> B["Generate Address<br/>for Receiving"]
+    B --> C["Sync with<br/>Blockchain Backend"]
+    C --> D["Build Transaction<br/>PSET Format"]
+    D --> E["Sign with<br/>Signer Component"]
+    E --> F["Broadcast<br/>to Network"]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f1f8e9
+```
 
 ## Quick Start Examples
 
@@ -318,44 +298,6 @@ createWallet().then(address => {
 
 </TabItem>
 </Tabs>
-
-
-## Core Workflow
-
-Every LWK application follows this fundamental pattern:
-
-```mermaid
-graph LR
-    A["Create Wallet<br/>with CT Descriptor"] --> B["Generate Address<br/>for Receiving"]
-    B --> C["Sync with<br/>Blockchain Backend"]
-    C --> D["Build Transaction<br/>PSET Format"]
-    D --> E["Sign with<br/>Signer Component"]
-    E --> F["Broadcast<br/>to Network"]
-    
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style C fill:#e8f5e8
-    style D fill:#fff3e0
-    style E fill:#fce4ec
-    style F fill:#f1f8e9
-```
-
-## Prerequisites
-
-Before diving in, ensure you have:
-
-- **Rust 1.70.0+** (for Rust development or building from source)
-- **Python 3.8+** (for Python bindings)
-- **Git** (for cloning the repository)
-
-### System Requirements
-
-| Platform | Status | Notes |
-|----------|--------|-------|
-| Linux | Full Support | Ubuntu 20.04+, RHEL 8+ |
-| macOS | Full Support | macOS 10.15+ |
-| Windows | Full Support | Windows 10+ |
-| WebAssembly | Supported | Modern browsers |
 
 ## Next Steps
 
