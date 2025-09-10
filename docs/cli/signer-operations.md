@@ -51,10 +51,11 @@ Import existing mnemonics as named signers:
 <TabItem value="mnemonic" label="From Mnemonic" default>
 
 ```bash
-# Load signer with name
+# Load signer with name (temporary, not persisted)
 lwk_cli signer load-software \
-  --signer-name "alice" \
-  --mnemonic "sheriff pass mechanic old near spring over pioneer rural wealth symptom cook"
+  --signer "alice" \
+  --mnemonic "sheriff pass mechanic old near spring over pioneer rural wealth symptom cook" \
+  --persist false
 ```
 
 </TabItem>
@@ -63,9 +64,9 @@ lwk_cli signer load-software \
 ```bash
 # Create persisted signer (survives restarts)
 lwk_cli signer load-software \
-  --signer-name "treasury" \
+  --signer "treasury" \
   --mnemonic "your twelve word mnemonic phrase goes here today example test" \
-  --persist
+  --persist true
 ```
 
 </TabItem>
@@ -74,7 +75,7 @@ lwk_cli signer load-software \
 ```bash
 # Load external signer (e.g., from another system)
 lwk_cli signer load-external \
-  --signer-name "external_alice" \
+  --signer "external_alice" \
   --fingerprint "deadbeef"
 ```
 
@@ -87,10 +88,10 @@ Get extended public keys (xpubs) for descriptor creation:
 
 ```bash
 # Get xpub for BIP84 derivation
-lwk_cli signer xpub --signer-name "alice" --kind bip84
+lwk_cli signer xpub --signer "alice" --kind bip84
 
 # Get xpub for BIP87 (multisig)
-lwk_cli signer xpub --signer-name "alice" --kind bip87
+lwk_cli signer xpub --signer "alice" --kind bip87
 ```
 
 **Example Output**:
@@ -146,9 +147,8 @@ lwk_cli signer jade-id --network-address "192.168.1.100:8080"
 ```bash
 # Load Jade signer
 lwk_cli signer load-jade \
-  --signer-name "jade_alice" \
-  --id "0123456789abcdef" \
-  --emulator false
+  --signer "jade_alice" \
+  --id "0123456789abcdef"
 ```
 
 #### Jade Multisig Registration
@@ -158,32 +158,13 @@ Register multisig policies with Jade for enhanced security:
 ```bash
 # Register 2-of-3 multisig
 lwk_cli signer register-multisig \
-  --signer-name "jade_alice" \
-  --descriptor-name "treasury" \
-  --descriptor "ct(slip77(...),elwsh(multi(2,[...]tpub...,[...]tpub...,[...]tpub...)))"
+  --signer "jade_alice" \
+  --wallet "treasury"
 ```
 
 ### Ledger Hardware Wallet
 
-#### Prerequisites
-
-Ensure Ledger device has:
-- Latest firmware installed
-- Bitcoin/Elements app installed and open
-- Device unlocked and ready
-
-#### Loading Ledger Signers
-
-```bash
-# Load Ledger signer
-lwk_cli signer load-ledger \
-  --signer-name "ledger_bob"
-
-# Load with specific transport
-lwk_cli signer load-ledger \
-  --signer-name "ledger_bob" \
-  --transport tcp://localhost:9999
-```
+LWK CLI does not have direct `load-ledger` commands. Ledger support is implemented through external signer loading with fingerprints.
 
 ## Signer Management
 
@@ -220,7 +201,7 @@ Get detailed information about a signer:
 
 ```bash
 # View signer details
-lwk_cli signer details --signer-name "alice"
+lwk_cli signer details --signer "alice"
 ```
 
 **Example Output**:
@@ -243,10 +224,7 @@ Remove signers from memory:
 
 ```bash
 # Unload specific signer
-lwk_cli signer unload --signer-name "alice"
-
-# Unload all signers
-lwk_cli signer unload --all
+lwk_cli signer unload --signer "alice"
 ```
 
 ## Signing Operations
@@ -261,7 +239,7 @@ Sign Partially Signed Elements Transactions (PSETs):
 ```bash
 # Sign PSET with software signer
 lwk_cli signer sign \
-  --signer-name "alice" \
+  --signer "alice" \
   --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..."
 ```
 
@@ -271,25 +249,18 @@ lwk_cli signer sign \
 ```bash
 # Sign PSET with Jade (requires device confirmation)
 lwk_cli signer sign \
-  --signer-name "jade_alice" \
+  --signer "jade_alice" \
   --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..."
-
-# Sign with registered multisig policy
-lwk_cli signer sign \
-  --signer-name "jade_alice" \
-  --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..." \
-  --registered-descriptor "treasury"
 ```
 
 </TabItem>
 <TabItem value="file" label="File-based Signing">
 
 ```bash
-# Sign PSET from file
+# Sign PSET from file (Note: CLI uses --pset parameter, not files)
 lwk_cli signer sign \
-  --signer-name "alice" \
-  --pset-file "transaction.pset" \
-  --output-file "signed_transaction.pset"
+  --signer "alice" \
+  --pset "$(cat transaction.pset)"
 ```
 
 </TabItem>
@@ -301,11 +272,10 @@ Sign multiple PSETs efficiently:
 
 ```bash
 # Sign multiple PSETs
-for pset in *.pset; do
+for pset_file in *.pset; do
   lwk_cli signer sign \
-    --signer-name "alice" \
-    --pset-file "$pset" \
-    --output-file "signed_$pset"
+    --signer "alice" \
+    --pset "$(cat "$pset_file")" > "signed_$pset_file"
 done
 ```
 
@@ -318,7 +288,7 @@ Create descriptors for single-signature wallets:
 ```bash
 # Generate singlesig descriptor
 lwk_cli signer singlesig-desc \
-  --signer-name "alice" \
+  --signer "alice" \
   --descriptor-blinding-key slip77 \
   --kind wpkh
 ```
@@ -372,98 +342,6 @@ lwk_cli wallet multisig-desc \
 
 </TabItem>
 </Tabs>
-
-## Security Best Practices
-
-### Software Signer Security
-
-**Mnemonic Storage**:
-- Store mnemonics securely (encrypted storage, password managers)
-- Never transmit mnemonics over insecure channels
-- Use strong passphrases for additional protection
-
-**Environment Security**:
-```bash
-# Use secure memory for sensitive operations
-export MLOCK_SECRETS=1
-lwk_cli signer generate
-
-# Clear shell history after operations
-history -d $(history 1)
-```
-
-### Hardware Signer Security
-
-**Device Verification**:
-- Always verify transaction details on device screen
-- Confirm addresses and amounts before signing
-- Use genuine hardware wallets from trusted sources
-
-**Firmware Updates**:
-```bash
-# Check Jade firmware version
-lwk_cli signer details --signer-name "jade_alice"
-
-# Update firmware through Jade companion app
-```
-
-### Operational Security
-
-**Key Rotation**:
-```bash
-# Generate new signers periodically
-lwk_cli signer generate
-lwk_cli signer load-software --signer-name "alice_v2" --mnemonic "..."
-
-# Migrate to new multisig descriptor
-lwk_cli wallet multisig-desc --threshold 2 --keyorigin-xpub "..." --keyorigin-xpub "..."
-```
-
-**Access Control**:
-- Limit signer access to authorized personnel
-- Use hardware signers for high-value operations
-- Implement approval workflows for critical transactions
-
-## Troubleshooting
-
-### Hardware Wallet Issues
-
-**Jade Connection Problems**:
-```bash
-# Check USB permissions
-ls -la /dev/ttyUSB* /dev/ttyACM*
-sudo usermod -a -G dialout $USER
-
-# Test connection
-lwk_cli signer jade-id --debug
-```
-
-**Ledger Connection Issues**:
-```bash
-# Check Ledger app status
-lwk_cli signer details --signer-name "ledger_bob"
-
-# Restart Ledger transport
-sudo systemctl restart ledger-transport
-```
-
-### Software Signer Issues
-
-**Mnemonic Import Errors**:
-```bash
-# Validate mnemonic format
-echo "your mnemonic words here" | wc -w  # Should be 12, 15, 18, 21, or 24
-
-# Test mnemonic validity
-lwk_cli signer generate --validate-mnemonic "your mnemonic here"
-```
-
-**Permission Errors**:
-```bash
-# Fix data directory permissions
-chmod 700 ~/.lwk
-chmod 600 ~/.lwk/signers/*
-```
 
 ## Next Steps
 

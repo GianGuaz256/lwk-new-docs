@@ -12,10 +12,6 @@ import TabItem from '@theme/TabItem';
 
 Confidential Transactions (CT) are the cornerstone of Liquid's privacy model, utilizing advanced cryptographic techniques to hide transaction amounts and asset types while maintaining the ability to verify transaction validity. LWK implements CT blinding seamlessly, but understanding the underlying mechanisms is crucial for developers working with privacy-sensitive applications.
 
-## Understanding Confidential Transactions
-
-Confidential Transactions transform visible transaction data into cryptographic commitments that hide the actual values while preserving mathematical relationships necessary for validation. This is achieved through a combination of homomorphic commitments, range proofs, and surjection proofs.
-
 ### Core Cryptographic Components
 
 #### Pedersen Commitments
@@ -217,18 +213,6 @@ print("Blinding public key: \(blindingPublicKey)")
 </TabItem>
 </Tabs>
 
-## Multi-Asset Blinding
-
-Liquid's multi-asset nature requires sophisticated blinding to hide both amounts and asset types in the same transaction. Each asset type gets its own asset commitment and surjection proof, while amounts are independently blinded with range proofs.
-
-## Unblinding Process
-
-Recipients can unblind received outputs using their private blinding keys. LWK automatically handles this process during wallet synchronization, revealing transaction details only to the intended recipients while maintaining privacy from external observers.
-
-## Privacy Considerations
-
-While Confidential Transactions provide strong privacy guarantees, developers should understand their limitations. CT protects transaction amounts and asset types but does not hide transaction structure, network metadata, or protect against advanced statistical analysis over time.
-
 ## Best Practices for Maximum Privacy
 
 1. **Use Fresh Addresses**: Generate new addresses for each transaction
@@ -236,5 +220,3 @@ While Confidential Transactions provide strong privacy guarantees, developers sh
 3. **Consider Timing**: Space out transactions to avoid timing analysis
 4. **Network Privacy**: Use additional tools like Tor for network-level privacy
 5. **Backup Blinding Keys**: Ensure blinding keys are included in wallet backups
-
-Understanding these concepts helps developers leverage Liquid's privacy features effectively while being aware of the system's capabilities and limitations.

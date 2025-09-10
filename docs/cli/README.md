@@ -61,6 +61,32 @@ lwk_cli wallet send          # Create spending transactions
 lwk_cli wallet issue         # Issue new Liquid assets
 lwk_cli wallet reissue       # Create additional asset units
 lwk_cli wallet burn          # Permanently destroy assets
+lwk_cli wallet drain         # Drain wallet to single address
+```
+
+### **Liquidex Operations**
+```bash
+lwk_cli liquidex make        # Create Liquidex proposals
+lwk_cli liquidex take        # Accept Liquidex proposals
+lwk_cli liquidex to-proposal # Convert PSET to proposal
+```
+
+### **AMP2 Operations**
+```bash
+lwk_cli amp2 descriptor      # Create AMP2 wallet descriptors
+lwk_cli amp2 register        # Register with AMP2 server
+lwk_cli amp2 cosign          # Request AMP2 cosigning
+```
+
+### **Asset Registry**
+```bash
+lwk_cli asset contract       # Create asset contracts
+lwk_cli asset details        # Get asset information
+lwk_cli asset list           # List known assets
+lwk_cli asset insert         # Add asset metadata
+lwk_cli asset remove         # Remove asset metadata
+lwk_cli asset from-explorer  # Import from block explorer
+lwk_cli asset publish        # Publish to registry
 ```
 
 ## Common Workflows

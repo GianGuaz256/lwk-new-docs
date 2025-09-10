@@ -106,7 +106,7 @@ Import wallet descriptors into LWK:
 ```bash
 # Load wallet with descriptor
 lwk_cli wallet load \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --descriptor "ct(slip77(...),elwsh(multi(2,[...]tpub.../<0;1>/*,[...]tpub.../<0;1>/*)))"
 ```
 
@@ -117,19 +117,18 @@ lwk_cli wallet load \
 # Load descriptor from file
 echo "ct(slip77(...),elwsh(multi(2,...)))" > treasury.desc
 lwk_cli wallet load \
-  --wallet-name "treasury" \
-  --descriptor-file "treasury.desc"
+  --wallet "treasury" \
+  --descriptor "$(cat treasury.desc)"
 ```
 
 </TabItem>
 <TabItem value="persistent" label="Persistent Loading">
 
 ```bash
-# Load with persistent storage
+# Load wallet (wallets are automatically persisted)
 lwk_cli wallet load \
-  --wallet-name "treasury" \
-  --descriptor "ct(...)" \
-  --persist
+  --wallet "treasury" \
+  --descriptor "ct(...)"
 ```
 
 </TabItem>
@@ -172,7 +171,7 @@ Get comprehensive wallet information:
 
 ```bash
 # Get wallet details
-lwk_cli wallet details --wallet-name "treasury"
+lwk_cli wallet details --wallet "treasury"
 ```
 
 **Example Output**:
@@ -201,10 +200,7 @@ Remove wallets from memory:
 
 ```bash
 # Unload specific wallet
-lwk_cli wallet unload --wallet-name "treasury"
-
-# Unload all wallets
-lwk_cli wallet unload --all
+lwk_cli wallet unload --wallet "treasury"
 ```
 
 ## Address Management
@@ -218,7 +214,7 @@ Create addresses for receiving funds:
 
 ```bash
 # Get next receive address
-lwk_cli wallet address --wallet-name "treasury"
+lwk_cli wallet address --wallet "treasury"
 ```
 
 **Example Output**:
@@ -236,7 +232,7 @@ lwk_cli wallet address --wallet-name "treasury"
 ```bash
 # Get address at specific index
 lwk_cli wallet address \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --index 5
 ```
 
@@ -247,7 +243,7 @@ lwk_cli wallet address \
 # Generate multiple addresses
 for i in {0..9}; do
   lwk_cli wallet address \
-    --wallet-name "treasury" \
+    --wallet "treasury" \
     --index $i
 done
 ```
@@ -280,28 +276,29 @@ View wallet asset balances:
 <TabItem value="all" label="All Assets" default>
 
 ```bash
-# Get complete balance information
-lwk_cli wallet balance --wallet-name "treasury"
+# Get complete balance information (raw asset IDs)
+lwk_cli wallet balance --wallet "treasury"
+
+# Get balance with asset tickers for readability
+lwk_cli wallet balance --wallet "treasury" --with-tickers
 ```
 
-**Example Output**:
+**Example Output (without tickers)**:
 ```json
 {
   "balance": {
     "144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49": 1000000,
     "0bb18d8ca2664551993b276d964ac5e50f5f0c7992b0b805b9f655f136fa1172": 200000000
-  },
-  "assets": {
-    "144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49": {
-      "name": "Liquid Bitcoin",
-      "ticker": "L-BTC",
-      "precision": 8
-    },
-    "0bb18d8ca2664551993b276d964ac5e50f5f0c7992b0b805b9f655f136fa1172": {
-      "name": "StableJuan",
-      "ticker": "STJ", 
-      "precision": 2
-    }
+  }
+}
+```
+
+**Example Output (with tickers)**:
+```json
+{
+  "balance": {
+    "L-BTC": 1000000,
+    "STJ": 200000000
   }
 }
 ```
@@ -310,20 +307,20 @@ lwk_cli wallet balance --wallet-name "treasury"
 <TabItem value="specific" label="Specific Asset">
 
 ```bash
-# Get balance for specific asset
+# Get balance with tickers (asset names)
 lwk_cli wallet balance \
-  --wallet-name "treasury" \
-  --asset "144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49"
+  --wallet "treasury" \
+  --with-tickers
 ```
 
 </TabItem>
 <TabItem value="formatted" label="Human Readable">
 
 ```bash
-# Get formatted balance output
+# Get balance with tickers for readable output
 lwk_cli wallet balance \
-  --wallet-name "treasury" \
-  --format human
+  --wallet "treasury" \
+  --with-tickers
 ```
 
 **Example Output**:
@@ -341,17 +338,7 @@ View and manage unspent transaction outputs:
 
 ```bash
 # List all UTXOs
-lwk_cli wallet utxos --wallet-name "treasury"
-
-# Filter UTXOs by asset
-lwk_cli wallet utxos \
-  --wallet-name "treasury" \
-  --asset "144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49"
-
-# Show UTXO details
-lwk_cli wallet utxos \
-  --wallet-name "treasury" \
-  --verbose
+lwk_cli wallet utxos --wallet "treasury"
 ```
 
 **Example UTXO Output**:
@@ -382,22 +369,17 @@ Access wallet transaction history:
 
 ```bash
 # Get complete transaction history
-lwk_cli wallet txs --wallet-name "treasury"
+lwk_cli wallet txs --wallet "treasury"
 ```
 
 </TabItem>
 <TabItem value="recent" label="Recent Transactions">
 
 ```bash
-# Get last 10 transactions
+# Get transactions with tickers for readability
 lwk_cli wallet txs \
-  --wallet-name "treasury" \
-  --limit 10
-
-# Get transactions from specific height
-lwk_cli wallet txs \
-  --wallet-name "treasury" \
-  --from-height 1814000
+  --wallet "treasury" \
+  --with-tickers
 ```
 
 </TabItem>
@@ -406,8 +388,14 @@ lwk_cli wallet txs \
 ```bash
 # Get specific transaction details
 lwk_cli wallet tx \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --txid "736aa9c7548d243f82716618b367770dbf49051ba1d14cb05c60bace0e7656c0"
+
+# Get transaction from explorer if not in wallet
+lwk_cli wallet tx \
+  --wallet "treasury" \
+  --txid "736aa9c7548d243f82716618b367770dbf49051ba1d14cb05c60bace0e7656c0" \
+  --from-explorer
 ```
 
 </TabItem>
@@ -420,13 +408,13 @@ Add and manage transaction annotations:
 ```bash
 # Set transaction memo
 lwk_cli wallet set-tx-memo \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --txid "736aa9c7..." \
   --memo "Asset issuance for Q1 2024"
 
 # Set address memo
 lwk_cli wallet set-addr-memo \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --address "tlq1qq..." \
   --memo "Customer deposit address #1001"
 ```
@@ -460,182 +448,6 @@ lwk_cli wallet sync \
   --wallet-name "treasury" \
   --auto \
   --interval 60  # Every 60 seconds
-```
-
-## Advanced Operations
-
-### Wallet Export
-
-Export wallet data for backup or migration:
-
-<Tabs>
-<TabItem value="descriptor" label="Descriptor Export" default>
-
-```bash
-# Export wallet descriptor
-lwk_cli wallet export \
-  --wallet-name "treasury" \
-  --format descriptor
-
-# Export to file
-lwk_cli wallet export \
-  --wallet-name "treasury" \
-  --output-file "treasury_backup.desc"
-```
-
-</TabItem>
-<TabItem value="json" label="Complete Export">
-
-```bash
-# Export complete wallet data
-lwk_cli wallet export \
-  --wallet-name "treasury" \
-  --format json \
-  --include-history \
-  --output-file "treasury_complete_backup.json"
-```
-
-</TabItem>
-</Tabs>
-
-### Wallet Restoration
-
-Restore wallets from backup data:
-
-```bash
-# Restore from descriptor file
-lwk_cli wallet import \
-  --wallet-name "treasury_restored" \
-  --descriptor-file "treasury_backup.desc"
-
-# Restore from complete backup
-lwk_cli wallet import \
-  --wallet-name "treasury_restored" \
-  --backup-file "treasury_complete_backup.json" \
-  --restore-history
-```
-
-### Wallet Policies
-
-Configure wallet-specific policies:
-
-```bash
-# Set spending policy
-lwk_cli wallet set-policy \
-  --wallet-name "treasury" \
-  --max-fee-rate 100 \
-  --require-confirmation true
-
-# Set derivation limits
-lwk_cli wallet set-policy \
-  --wallet-name "treasury" \
-  --max-receive-index 1000 \
-  --max-change-index 100
-```
-
-## Security Considerations
-
-### Descriptor Security
-
-**Backup Management**:
-- Store descriptors securely (encrypted storage)
-- Maintain multiple backup copies
-- Verify backup integrity regularly
-
-**Access Control**:
-```bash
-# Secure descriptor files
-chmod 600 *.desc
-chown $USER:$USER *.desc
-
-# Encrypt sensitive files
-gpg --symmetric --cipher-algo AES256 treasury.desc
-```
-
-### Privacy Protection
-
-**Address Reuse Prevention**:
-```bash
-# Generate fresh addresses for each transaction
-lwk_cli wallet address --wallet-name "treasury" --index new
-```
-
-**Gap Limit Management**:
-```bash
-# Configure address gap limit
-lwk_cli wallet set-policy \
-  --wallet-name "treasury" \
-  --gap-limit 20
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**Sync Problems**:
-```bash
-# Force full resync
-lwk_cli wallet sync \
-  --wallet-name "treasury" \
-  --force \
-  --from-height 0
-```
-
-**Balance Discrepancies**:
-```bash
-# Verify UTXO set
-lwk_cli wallet utxos --wallet-name "treasury" --verify
-
-# Recompute balance
-lwk_cli wallet balance \
-  --wallet-name "treasury" \
-  --recompute
-```
-
-**Address Generation Issues**:
-```bash
-# Validate descriptor
-lwk_cli wallet validate-descriptor \
-  --descriptor "ct(...)"
-
-# Check derivation paths
-lwk_cli wallet details \
-  --wallet-name "treasury" \
-  --show-derivation
-```
-
-## Performance Optimization
-
-### Batch Operations
-
-Optimize multiple operations:
-
-```bash
-# Batch address generation
-lwk_cli wallet batch-addresses \
-  --wallet-name "treasury" \
-  --count 100 \
-  --start-index 0
-
-# Batch UTXO queries
-lwk_cli wallet batch-utxos \
-  --wallet-name "treasury" \
-  --assets "asset1,asset2,asset3"
-```
-
-### Caching
-
-Configure result caching:
-
-```bash
-# Enable address caching
-lwk_cli wallet set-cache \
-  --wallet-name "treasury" \
-  --cache-addresses true \
-  --cache-size 1000
-
-# Clear cache
-lwk_cli wallet clear-cache --wallet-name "treasury"
 ```
 
 ## Next Steps

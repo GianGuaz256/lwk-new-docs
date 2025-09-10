@@ -93,6 +93,22 @@ let pset = try txBuilder
 ```
 
 </TabItem>
+<TabItem value="javascript" label="JS">
+
+```javascript
+import { TxBuilder, Network } from 'lwk-wasm';
+
+// Set fee rate in satoshis per virtual byte
+const txBuilder = new TxBuilder(Network.REGTEST)
+    .feeRate(100); // 100 sat/vB
+
+// Build with automatic fee calculation
+const pset = txBuilder
+    .addAddressee(recipient)
+    .finish(wollet);
+```
+
+</TabItem>
 </Tabs>
 
 ### Absolute Fee
@@ -152,6 +168,19 @@ let pset = try txBuilder
 ```
 
 </TabItem>
+<TabItem value="javascript" label="JS">
+
+```javascript
+// Set absolute fee in satoshis
+const txBuilder = new TxBuilder(Network.REGTEST)
+    .absoluteFee(5000); // 5000 sats fixed fee
+
+const pset = txBuilder
+    .addAddressee(recipient)
+    .finish(wollet);
+```
+
+</TabItem>
 </Tabs>
 
 ## Dynamic Fee Estimation
@@ -208,6 +237,19 @@ try txBuilder.feeRate(nil)  // Auto-estimate
 // Or specify minimum acceptable fee rate
 let txBuilder = TxBuilder(network: .regtest)
 try txBuilder.feeRate(50)  // At least 50 sat/vB
+```
+
+</TabItem>
+<TabItem value="javascript" label="JS">
+
+```javascript
+// Use default fee estimation (recommended)
+const txBuilder = new TxBuilder(Network.REGTEST)
+    .feeRate(null); // Auto-estimate
+
+// Or specify minimum acceptable fee rate
+const txBuilder2 = new TxBuilder(Network.REGTEST)
+    .feeRate(50); // At least 50 sat/vB
 ```
 
 </TabItem>
@@ -290,23 +332,23 @@ try txBuilder
 ```
 
 </TabItem>
+<TabItem value="javascript" label="JS">
+
+```javascript
+// Minimize inputs for better fee efficiency
+const txBuilder = new TxBuilder(Network.REGTEST)
+    .addUtxo(largestUtxo)
+    .feeRate(100);
+
+// Batch operations when possible
+txBuilder
+    .addAddressee(recipient1)
+    .addAddressee(recipient2)
+    .addAddressee(recipient3);
+```
+
+</TabItem>
 </Tabs>
-
-## Common Fee Ranges
-
-- **Minimum**: 1-10 sat/vB for low-priority transactions
-- **Standard**: 10-50 sat/vB for normal priority
-- **Priority**: 50-200 sat/vB for fast confirmation
-- **Urgent**: 200+ sat/vB for immediate confirmation
-
-## Best Practices
-
-### Fee Rate Selection
-
-1. **Network Conditions**: Monitor Liquid mempool for optimal fee rates
-2. **Transaction Priority**: Use higher fees for time-sensitive transactions
-3. **Asset Type**: Consider higher fees for complex asset operations
-4. **Batch Operations**: Combine multiple operations to amortize fees
 
 ### Fee Optimization
 
@@ -314,69 +356,3 @@ try txBuilder
 2. **Input Selection**: Prefer fewer, larger inputs to reduce transaction size
 3. **Output Minimization**: Combine outputs when possible
 4. **Fee Estimation**: Use dynamic estimation for optimal network conditions
-
-### Error Handling
-
-Always handle fee-related errors gracefully:
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-match tx_builder.finish(&wollet) {
-    Ok(pset) => {
-        println!("Transaction built with appropriate fees");
-    },
-    Err(lwk_wollet::Error::InsufficientFunds { needed, available }) => {
-        eprintln!("Insufficient funds for transaction + fees");
-        eprintln!("Need: {} sat, Have: {} sat", needed, available);
-    },
-    Err(e) => {
-        eprintln!("Fee calculation error: {}", e);
-    }
-}
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-try:
-    pset = tx_builder.finish(wollet)
-    print("Transaction built with appropriate fees")
-except InsufficientFundsError as e:
-    print(f"Insufficient funds for transaction + fees: {e}")
-except Exception as e:
-    print(f"Fee calculation error: {e}")
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-try {
-    val pset = txBuilder.finish(wollet)
-    println("Transaction built with appropriate fees")
-} catch (e: InsufficientFundsException) {
-    println("Insufficient funds for transaction + fees: ${e.message}")
-} catch (e: Exception) {
-    println("Fee calculation error: ${e.message}")
-}
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-do {
-    let pset = try txBuilder.finish(wollet)
-    print("Transaction built with appropriate fees")
-} catch let error as InsufficientFundsError {
-    print("Insufficient funds for transaction + fees: \(error)")
-} catch {
-    print("Fee calculation error: \(error)")
-}
-```
-
-</TabItem>
-</Tabs>

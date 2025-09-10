@@ -78,53 +78,6 @@ foreach (var kvp in balances) {
 </TabItem>
 </Tabs>
 
-### L-BTC Balance
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-let lbtc_balance = wollet.balance()?.get(&ElementsNetwork::liquid_asset_id())?;
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-lbtc_balance = wollet.balance().get(Network.liquid_asset_id())
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-val lbtcBalance = wollet.balance()[Network.liquidAssetId()]
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-let lbtcBalance = try wollet.balance()[Network.liquidAssetId()]
-```
-
-</TabItem>
-<TabItem value="wasm" label="WASM">
-
-```javascript
-const lbtcBalance = wollet.balance()[Network.liquidAssetId()];
-```
-
-</TabItem>
-<TabItem value="csharp" label="C#">
-
-```csharp
-var lbtcBalance = wollet.Balance()[Network.LiquidAssetId()];
-```
-
-</TabItem>
-</Tabs>
-
 ## Asset Types
 
 ### L-BTC (Liquid Bitcoin)
@@ -132,142 +85,18 @@ var lbtcBalance = wollet.Balance()[Network.LiquidAssetId()];
 - Used for transaction fees
 - Asset ID: `6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d`
 
-### Issued Assets
-- Custom tokens on Liquid
-- Unique asset IDs from issuance transactions
-- Support for reissuance and burning
+### USDT (Tether USD)
+- Popular stablecoin on Liquid
+- Asset ID: `ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2`
+- Ticker: USDt
+- Precision: 8 decimals
 
-## UTXO Management
+### AMP Assets (Asset Management Platform)
+- Compliance-focused assets with regulatory controls
+- Require special handling through AMP integration
+- Support whitelist/blacklist controls and freezing capabilities
+- See [AMP Assets Receive & Monitor guide](../../amp-assets/receive-monitor) for detailed integration
 
-### Available UTXOs
+## Asset Registry
 
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-let utxos = wollet.utxos()?;
-for utxo in utxos {
-    println!("UTXO: {}:{} - {} sats of {}", 
-             utxo.outpoint.txid, 
-             utxo.outpoint.vout,
-             utxo.unblinded.value,
-             utxo.unblinded.asset);
-}
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-utxos = wollet.utxos()
-for utxo in utxos:
-    print(f"UTXO: {utxo.outpoint.txid}:{utxo.outpoint.vout} - {utxo.unblinded.value} sats of {utxo.unblinded.asset}")
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-val utxos = wollet.utxos()
-for (utxo in utxos) {
-    println("UTXO: ${utxo.outpoint.txid}:${utxo.outpoint.vout} - ${utxo.unblinded.value} sats of ${utxo.unblinded.asset}")
-}
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-let utxos = try wollet.utxos()
-for utxo in utxos {
-    print("UTXO: \(utxo.outpoint.txid):\(utxo.outpoint.vout) - \(utxo.unblinded.value) sats of \(utxo.unblinded.asset)")
-}
-```
-
-</TabItem>
-<TabItem value="wasm" label="WASM">
-
-```javascript
-const utxos = wollet.utxos();
-for (const utxo of utxos) {
-    console.log(`UTXO: ${utxo.outpoint.txid}:${utxo.outpoint.vout} - ${utxo.unblinded.value} sats of ${utxo.unblinded.asset}`);
-}
-```
-
-</TabItem>
-<TabItem value="csharp" label="C#">
-
-```csharp
-var utxos = wollet.Utxos();
-foreach (var utxo in utxos) {
-    Console.WriteLine($"UTXO: {utxo.Outpoint.Txid}:{utxo.Outpoint.Vout} - {utxo.Unblinded.Value} sats of {utxo.Unblinded.Asset}");
-}
-```
-
-</TabItem>
-</Tabs>
-
-### Coin Selection
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-// TxBuilder automatically selects appropriate UTXOs
-let mut tx_builder = TxBuilder::new();
-tx_builder.add_recipient(&recipient_addr, amount)?;
-let pset = tx_builder.finish(&wollet)?;
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-# TxBuilder automatically selects appropriate UTXOs
-tx_builder = TxBuilder()
-tx_builder.add_recipient(recipient_addr, amount)
-pset = tx_builder.finish(wollet)
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-// TxBuilder automatically selects appropriate UTXOs
-val txBuilder = TxBuilder()
-txBuilder.addRecipient(recipientAddr, amount)
-val pset = txBuilder.finish(wollet)
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-// TxBuilder automatically selects appropriate UTXOs
-let txBuilder = TxBuilder()
-try txBuilder.addRecipient(address: recipientAddr, amount: amount)
-let pset = try txBuilder.finish(wollet: wollet)
-```
-
-</TabItem>
-<TabItem value="wasm" label="WASM">
-
-```javascript
-// TxBuilder automatically selects appropriate UTXOs
-const txBuilder = new TxBuilder();
-txBuilder.addRecipient(recipientAddr, amount);
-const pset = txBuilder.finish(wollet);
-```
-
-</TabItem>
-<TabItem value="csharp" label="C#">
-
-```csharp
-// TxBuilder automatically selects appropriate UTXOs
-var txBuilder = new TxBuilder();
-txBuilder.AddRecipient(recipientAddr, amount);
-var pset = txBuilder.Finish(wollet);
-```
-
-</TabItem>
-</Tabs>
+For comprehensive information about all assets issued on Liquid, including their metadata, tickers, and issuer information, consult the [Blockstream Liquid Asset Registry documentation](https://docs.liquid.net/docs/blockstream-liquid-asset-registry). The registry provides standardized asset information used by wallets, block explorers, and other Liquid services.

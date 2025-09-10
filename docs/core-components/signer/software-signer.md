@@ -16,6 +16,8 @@ SwSigner provides software-based transaction signing using BIP39 mnemonics with 
 
 ### From Mnemonic
 
+Create a software signer from an existing BIP39 mnemonic phrase. This is the most common way to restore a wallet from a seed phrase.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -92,6 +94,8 @@ Signer signer = new Signer(mnemonic, network);
 
 ### Generate New Mnemonic
 
+Generate a completely new random mnemonic and create a signer from it. Use this when creating a brand new wallet.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -162,6 +166,8 @@ Console.WriteLine($"Generated mnemonic: {mnemonic}");
 ## Key Derivation and Descriptor Creation
 
 ### Create Wallet Descriptors
+
+Generate CT descriptors from the signer for creating watch-only wallets. The signer provides convenient methods for common descriptor types.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -235,6 +241,8 @@ Console.WriteLine($"Descriptor: {descriptor}");
 </Tabs>
 
 ### Key Origin Information
+
+Retrieve extended public keys and fingerprints for different BIP standards. This information is essential for multisig coordination and wallet recovery.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -310,6 +318,8 @@ string bip87Xpub = signer.KeyoriginXpub(Bip.NewBip87());  // Multisig
 
 ### Basic Signing
 
+Sign Partially Signed Elements Transactions (PSETs) using the software signer. This is the core operation for authorizing transactions.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -368,77 +378,3 @@ Console.WriteLine("Successfully signed transaction");
 
 </TabItem>
 </Tabs>
-
-### Message Signing
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-use elements_miniscript::bitcoin::bip32::DerivationPath;
-
-// Sign message with master key
-let message = "Hello, LWK!";
-let path = DerivationPath::master();
-let signature = signer.sign_message(message, &path)?;
-println!("Signature: {}", signature);
-```
-
-</TabItem>
-<TabItem value="js" label="JS">
-
-```javascript
-// Sign message with master key (WASM only)
-const message = "Hello, LWK!";
-const signature = signer.signMessage(message);
-console.log("Signature:", signature);
-```
-
-</TabItem>
-</Tabs>
-
-## Multi-signature Partial Signing
-
-```rust
-// Each signer signs independently
-let signer1 = SwSigner::new(&mnemonic1, true)?;
-let signer2 = SwSigner::new(&mnemonic2, true)?;
-
-// Partial signing
-let signed1 = signer1.sign(&mut pset)?;
-let signed2 = signer2.sign(&mut pset)?;
-
-// Check if threshold reached
-let is_complete = pset.inputs().iter().all(|input| {
-    input.partial_sigs.len() >= threshold
-});
-```
-
-## Transaction Types
-
-### Standard Transfers
-```rust
-// SwSigner handles all standard transaction types automatically
-let mut pset = TxBuilder::new()
-    .add_recipient(&recipient_addr, amount)?
-    .finish(&wollet)?;
-
-signer.sign(&mut pset)?;
-```
-
-### Asset Operations
-```rust
-// Asset issuance
-let mut issuance_pset = TxBuilder::new()
-    .issue_asset(asset_amount, token_amount)?
-    .finish(&wollet)?;
-
-signer.sign(&mut issuance_pset)?;
-
-// Asset reissuance
-let mut reissuance_pset = TxBuilder::new()
-    .reissue_asset(&asset_id, reissue_amount)?
-    .finish(&wollet)?;
-
-signer.sign(&mut reissuance_pset)?;
-```

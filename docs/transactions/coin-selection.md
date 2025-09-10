@@ -102,7 +102,7 @@ let pset = try TxBuilder(network: .regtest)
 ```
 
 </TabItem>
-<TabItem value="javascript" label="JavaScript/WASM">
+<TabItem value="javascript" label="JS">
 
 ```javascript
 import { TxBuilder, AddressAmount, AssetId, Network } from 'lwk-wasm';
@@ -224,7 +224,7 @@ let pset = try TxBuilder(network: .regtest)
 ```
 
 </TabItem>
-<TabItem value="javascript" label="JavaScript/WASM">
+<TabItem value="javascript" label="JS">
 
 ```javascript
 import { OutPoint, TxBuilder, Network } from 'lwk-wasm';
@@ -337,7 +337,7 @@ let pset = try TxBuilder(network: .regtest)
 ```
 
 </TabItem>
-<TabItem value="javascript" label="JavaScript/WASM">
+<TabItem value="javascript" label="JS">
 
 ```javascript
 import { TxBuilder, AssetId, Network } from 'lwk-wasm';

@@ -14,7 +14,9 @@ Wollet synchronizes with the Liquid blockchain through Electrum or Esplora backe
 
 ## Backend Types
 
-### Electrum (Recommended)
+### Electrum
+
+Connect to an Electrum server for real-time blockchain data. Electrum provides efficient SPV-style synchronization with lower bandwidth requirements.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -81,6 +83,8 @@ var client = new ElectrumClient(url);
 
 ### Esplora
 
+Connect to an Esplora HTTP API server for blockchain data. Esplora offers REST-style access with comprehensive transaction and block information.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -142,6 +146,8 @@ var client = new EsploraClient("https://blockstream.info/liquidtestnet/api");
 
 ### Full Scan (Initial Sync)
 
+Perform a complete wallet scan from the beginning. Use this for initial setup or when you suspect missing transactions.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -202,6 +208,8 @@ wollet.ApplyUpdate(update);
 </Tabs>
 
 ### Incremental Sync
+
+Sync only new transactions since the last update. More efficient for regular wallet updates when you're already synchronized.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -266,6 +274,8 @@ wollet.ApplyUpdate(update);
 
 ### Mainnet
 
+Production Liquid network configuration. Use for real assets and live applications.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -319,6 +329,8 @@ var url = new ElectrumUrl("blockstream.info:700", false, true);
 
 ### Testnet
 
+Test network with fake assets. Use for development and testing without real value.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -371,6 +383,8 @@ var url = new ElectrumUrl("blockstream.info:465", true, true);
 </Tabs>
 
 ### Regtest
+
+Local development network for testing. Run your own Elements node for complete control and privacy.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -427,6 +441,8 @@ var url = new ElectrumUrl("localhost:60401", false, false);
 
 ### Parallel Requests
 
+Increase the number of concurrent requests to speed up synchronization. Higher values use more bandwidth but sync faster.
+
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
@@ -479,149 +495,16 @@ var update = client.FullScan(wollet, stopGap: 20, parallelRequests: 50);
 </Tabs>
 
 ### Gap Limits
+
+Control how many consecutive unused addresses to check before stopping the scan.
+
 - **Small Gap (5-10)**: Faster sync, may miss transactions
 - **Large Gap (20-50)**: Comprehensive but slower
 - **Adaptive**: Start small, increase if needed
 
-## Error Handling
-
-### Network Connectivity
-
-<Tabs groupId="language">
-<TabItem value="rust" label="Rust" default>
-
-```rust
-// Retry with exponential backoff
-let mut retries = 0;
-loop {
-    match client.full_scan(&wollet, 20, 20) {
-        Ok(update) => {
-            wollet.apply_update(update)?;
-            break;
-        }
-        Err(e) if retries < 3 => {
-            retries += 1;
-            std::thread::sleep(Duration::from_secs(2_u64.pow(retries)));
-        }
-        Err(e) => return Err(e),
-    }
-}
-```
-
-</TabItem>
-<TabItem value="python" label="Python">
-
-```python
-# Retry with exponential backoff
-import time
-retries = 0
-while True:
-    try:
-        update = client.full_scan(wollet, stop_gap=20)
-        wollet.apply_update(update)
-        break
-    except Exception as e:
-        if retries < 3:
-            retries += 1
-            time.sleep(2 ** retries)
-        else:
-            raise e
-```
-
-</TabItem>
-<TabItem value="kotlin" label="Kotlin">
-
-```kotlin
-// Retry with exponential backoff
-var retries = 0
-while (true) {
-    try {
-        val update = client.fullScan(wollet, stopGap = 20u)
-        wollet.applyUpdate(update)
-        break
-    } catch (e: Exception) {
-        if (retries < 3) {
-            retries++
-            Thread.sleep((2.0.pow(retries) * 1000).toLong())
-        } else {
-            throw e
-        }
-    }
-}
-```
-
-</TabItem>
-<TabItem value="swift" label="Swift">
-
-```swift
-// Retry with exponential backoff
-var retries = 0
-while true {
-    do {
-        let update = try client.fullScan(wollet: wollet, stopGap: 20)
-        try wollet.applyUpdate(update: update)
-        break
-    } catch {
-        if retries < 3 {
-            retries += 1
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retries)))
-        } else {
-            throw error
-        }
-    }
-}
-```
-
-</TabItem>
-<TabItem value="wasm" label="WASM">
-
-```javascript
-// Retry with exponential backoff
-let retries = 0;
-while (true) {
-    try {
-        const update = await client.fullScan(wollet);
-        if (update) {
-            wollet.applyUpdate(update);
-        }
-        break;
-    } catch (e) {
-        if (retries < 3) {
-            retries++;
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
-        } else {
-            throw e;
-        }
-    }
-}
-```
-
-</TabItem>
-<TabItem value="csharp" label="C#">
-
-```csharp
-// Retry with exponential backoff
-int retries = 0;
-while (true) {
-    try {
-        var update = client.FullScan(wollet, 20);
-        wollet.ApplyUpdate(update);
-        break;
-    } catch (Exception e) {
-        if (retries < 3) {
-            retries++;
-            Thread.Sleep((int)Math.Pow(2, retries) * 1000);
-        } else {
-            throw;
-        }
-    }
-}
-```
-
-</TabItem>
-</Tabs>
-
 ## Progress Tracking
+
+Monitor synchronization progress for long-running operations. Useful for showing progress bars in user interfaces.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
@@ -713,4 +596,4 @@ foreach (var chunk in addressChunks) {
 ```
 
 </TabItem>
-</Tabs> 
+</Tabs>

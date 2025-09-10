@@ -50,23 +50,23 @@ const sidebars: SidebarsConfig = {
             'core-components/signer/signing-flow',
           ],
         },
-        {
-          type: 'category',
-          label: 'Hardware Wallets',
-          items: [
-            'core-components/hardware-wallets/hardware-wallets-overview',
-            'core-components/hardware-wallets/jade',
-            'core-components/hardware-wallets/ledger',
-            // 'core-components/hardware-wallets/extending-hardware-wallets',
-          ],
-        },
+        // {
+        //   type: 'category',
+        //   label: 'Hardware Wallets',
+        //   items: [
+        //     'core-components/hardware-wallets/hardware-wallets-overview',
+        //     'core-components/hardware-wallets/jade',
+        //     'core-components/hardware-wallets/ledger',
+        //     // 'core-components/hardware-wallets/extending-hardware-wallets',
+        //   ],
+        // },
         {
           type: 'category',
           label: 'Multisig',
           items: [
             'core-components/multisig/multisig-overview',
-            'core-components/multisig/descriptor-creation',
-            'core-components/multisig/registration',
+            'core-components/multisig/setup',
+            'core-components/multisig/transaction-signing',
           ],
         },
       ],
@@ -75,12 +75,9 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Transactions',
       items: [
-        'transactions/psets',
-        'transactions/building-transactions',
         'transactions/fee-estimation',
         'transactions/coin-selection',
         'transactions/blinding',
-        'transactions/finalization',
       ],
     },
     {
@@ -127,7 +124,6 @@ const sidebars: SidebarsConfig = {
         'cli/wallet-operations',
         'cli/asset-operations',
         'cli/transaction-operations',
-        'cli/scripting',
       ],
     },
     // {

@@ -1,302 +1,189 @@
 ---
-id: descriptor-creation
-title: Descriptor Creation
-sidebar_label: Descriptor Creation
+id: setup
+title: Setup
+sidebar_label: Setup
 sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Creating Multisig Descriptors
+# Multisig Setup
 
-Creating multisig descriptors in LWK requires a coordinated process of collecting extended public keys from all participants and combining them into a standardized descriptor format. LWK provides both high-level utilities through the app interface and low-level APIs for direct integration.
+Setting up a 2-of-3 multisig wallet requires 3 simple steps:
 
-## Understanding LWK Multisig Descriptors
+## Step 1: Get XPubs from Each Signer
 
-LWK multisig descriptors follow the Elements descriptor format with specific enhancements for Liquid's confidential transactions. The basic structure is:
-
-```
-ct(blinding_key,elwsh(multi(threshold,xpub1/*,xpub2/*,xpub3/*)))
-```
-
-Where:
-- `ct()` wraps the descriptor for confidential transaction support
-- `blinding_key` can be either `slip77(random_key)` or `elip151`
-- `elwsh()` indicates Elements witness script hash (native segwit)
-- `multi()` defines the threshold and participating keys
-- `/*` indicates the derivation path for address generation
-
-## Step 1: Generating Extended Public Keys
-
-Each participant must generate their extended public key (xpub) using their signer. LWK supports multiple signer types, each with their own xpub generation method.
-
-### Software Signers
+Each participant generates their extended public key using their private key.
+Share these XPubs with all other participants.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
 ```rust
-use lwk_signer::{SwSigner, Signer};
-
-// Create a software signer from mnemonic
-let mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-let signer = SwSigner::new(mnemonic, true)?; // true for mainnet
-
-// Get the master xpub
-let master_xpub = signer.xpub();
-println!("Master XPub: {}", master_xpub);
-
-// Get fingerprint for the descriptor
-let fingerprint = signer.fingerprint();
-println!("Fingerprint: {}", fingerprint);
-
-// Format for multisig descriptor
-let keyorigin_xpub = format!("[{}]{}", fingerprint, master_xpub);
-println!("Keyorigin XPub: {}", keyorigin_xpub);
+// Each participant runs this:
+let signer = SwSigner::new(mnemonic, true)?;
+let xpub = signer.keyorigin_xpub(Bip::new_bip87())?;
+// Share this XPub with others
 ```
 
 </TabItem>
 <TabItem value="python" label="Python">
 
 ```python
-from lwk import SwSigner
-
-# Create a software signer from mnemonic
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-signer = SwSigner(mnemonic, True)  # True for mainnet
-
-# Get the master xpub
-master_xpub = signer.xpub()
-print(f"Master XPub: {master_xpub}")
-
-# Get fingerprint for the descriptor
-fingerprint = signer.fingerprint()
-print(f"Fingerprint: {fingerprint}")
-
-# Format for multisig descriptor
-keyorigin_xpub = f"[{fingerprint}]{master_xpub}"
-print(f"Keyorigin XPub: {keyorigin_xpub}")
+# Each participant runs this:
+signer = SwSigner(mnemonic, True)
+xpub = signer.keyorigin_xpub(Bip.new_bip87())
+# Share this XPub with others
 ```
 
 </TabItem>
 <TabItem value="kotlin" label="Kotlin">
 
 ```kotlin
-import com.blockstream.lwk.SwSigner
-
-// Create a software signer from mnemonic
-val mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-val signer = SwSigner(mnemonic, true) // true for mainnet
-
-// Get the master xpub
-val masterXpub = signer.xpub()
-println("Master XPub: $masterXpub")
-
-// Get fingerprint for the descriptor
-val fingerprint = signer.fingerprint()
-println("Fingerprint: $fingerprint")
-
-// Format for multisig descriptor
-val keyoriginXpub = "[$fingerprint]$masterXpub"
-println("Keyorigin XPub: $keyoriginXpub")
+// Each participant runs this:
+val signer = SwSigner(mnemonic, true)
+val xpub = signer.keyoriginXpub(Bip.newBip87())
+// Share this XPub with others
 ```
 
 </TabItem>
 <TabItem value="swift" label="Swift">
 
 ```swift
-import LiquidWalletKit
-
-// Create a software signer from mnemonic
-let mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+// Each participant runs this:
 let signer = try SwSigner(mnemonic: mnemonic, isMainnet: true)
-
-// Get the master xpub
-let masterXpub = signer.xpub()
-print("Master XPub: \(masterXpub)")
-
-// Get fingerprint for the descriptor
-let fingerprint = signer.fingerprint()
-print("Fingerprint: \(fingerprint)")
-
-// Format for multisig descriptor
-let keyoriginXpub = "[\(fingerprint)]\(masterXpub)"
-print("Keyorigin XPub: \(keyoriginXpub)")
+let xpub = try signer.keyoriginXpub(bip: Bip.newBip87())
+// Share this XPub with others
 ```
 
 </TabItem>
 <TabItem value="javascript" label="JavaScript/WASM">
 
 ```javascript
-import { SwSigner } from 'lwk-wasm';
-
-// Create a software signer from mnemonic
-const mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-const signer = new SwSigner(mnemonic, true); // true for mainnet
-
-// Get the master xpub
-const masterXpub = signer.xpub();
-console.log(`Master XPub: ${masterXpub}`);
-
-// Get fingerprint for the descriptor
-const fingerprint = signer.fingerprint();
-console.log(`Fingerprint: ${fingerprint}`);
-
-// Format for multisig descriptor
-const keyoriginXpub = `[${fingerprint}]${masterXpub}`;
-console.log(`Keyorigin XPub: ${keyoriginXpub}`);
+// Each participant runs this:
+const signer = new SwSigner(mnemonic, true);
+const xpub = signer.keyoriginXpub(Bip.newBip87());
+// Share this XPub with others
 ```
 
 </TabItem>
 </Tabs>
 
-## Step 2: Creating the Multisig Descriptor
+## Step 2: Create Multisig Descriptor
 
-LWK provides the `multisig_desc` function to create properly formatted multisig descriptors:
+Combine all XPubs into a single multisig descriptor that defines the wallet.
+This descriptor will be shared by all participants.
 
 <Tabs groupId="language">
 <TabItem value="rust" label="Rust" default>
 
 ```rust
-use lwk_common::{multisig_desc, Multisig, DescriptorBlindingKey};
+// Collect the 3 XPubs from step 1
+let xpubs = vec![xpub1, xpub2, xpub3];
+let parsed_xpubs: Vec<_> = xpubs.iter().map(|s| keyorigin_xpub_from_str(s)).collect()?;
 
-// Collect keyorigin xpubs from all participants
-let keyorigin_xpubs = vec![
-    "[deadbeef]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-    "[cafebabe]tpubD6NzVbkrYhZ4YB4X8mC6ZfFg7p8pYKKqJFp7CKuP2Y5VcnMPHPmVyRhk7gvTzDH9CiXg4uF1Vz8D3rMYFz2YB4X8mC6ZfFg7p8pYKKqJFp7C",
-    "[facefeed]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-];
-
-// Parse xpubs and create descriptor
-let parsed_xpubs: Vec<_> = keyorigin_xpubs
-    .iter()
-    .map(|s| keyorigin_xpub_from_str(s))
-    .collect::<Result<Vec<_>, _>>()?;
-
-let descriptor = multisig_desc(
-    2, // 2-of-3 threshold
-    parsed_xpubs,
-    Multisig::Wsh, // Native segwit
-    DescriptorBlindingKey::Slip77Rand, // Random SLIP-77 key
-)?;
-
-println!("Multisig descriptor: {}", descriptor);
+// Create 2-of-3 multisig descriptor
+let descriptor = multisig_desc(2, parsed_xpubs, Multisig::Wsh, DescriptorBlindingKey::Elip151)?;
 ```
 
 </TabItem>
 <TabItem value="python" label="Python">
 
 ```python
-from lwk import multisig_desc, Multisig, DescriptorBlindingKey, keyorigin_xpub_from_str
+# Collect the 3 XPubs from step 1
+xpubs = [xpub1, xpub2, xpub3]
+parsed_xpubs = [keyorigin_xpub_from_str(s) for s in xpubs]
 
-# Collect keyorigin xpubs from all participants
-keyorigin_xpubs = [
-    "[deadbeef]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-    "[cafebabe]tpubD6NzVbkrYhZ4YB4X8mC6ZfFg7p8pYKKqJFp7CKuP2Y5VcnMPHPmVyRhk7gvTzDH9CiXg4uF1Vz8D3rMYFz2YB4X8mC6ZfFg7p8pYKKqJFp7C",
-    "[facefeed]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-]
-
-# Parse xpubs and create descriptor
-parsed_xpubs = [keyorigin_xpub_from_str(s) for s in keyorigin_xpubs]
-
-descriptor = multisig_desc(
-    2,  # 2-of-3 threshold
-    parsed_xpubs,
-    Multisig.WSH,  # Native segwit
-    DescriptorBlindingKey.SLIP77_RAND,  # Random SLIP-77 key
-)
-
-print(f"Multisig descriptor: {descriptor}")
+# Create 2-of-3 multisig descriptor
+descriptor = multisig_desc(2, parsed_xpubs, Multisig.WSH, DescriptorBlindingKey.ELIP151)
 ```
 
 </TabItem>
 <TabItem value="kotlin" label="Kotlin">
 
 ```kotlin
-import com.blockstream.lwk.*
+// Collect the 3 XPubs from step 1
+val xpubs = listOf(xpub1, xpub2, xpub3)
+val parsedXpubs = xpubs.map { keyoriginXpubFromStr(it) }
 
-// Collect keyorigin xpubs from all participants
-val keyoriginXpubs = listOf(
-    "[deadbeef]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-    "[cafebabe]tpubD6NzVbkrYhZ4YB4X8mC6ZfFg7p8pYKKqJFp7CKuP2Y5VcnMPHPmVyRhk7gvTzDH9CiXg4uF1Vz8D3rMYFz2YB4X8mC6ZfFg7p8pYKKqJFp7C",
-    "[facefeed]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk"
-)
-
-// Parse xpubs and create descriptor
-val parsedXpubs = keyoriginXpubs.map { keyoriginXpubFromStr(it) }
-
-val descriptor = multisigDesc(
-    2, // 2-of-3 threshold
-    parsedXpubs,
-    Multisig.WSH, // Native segwit
-    DescriptorBlindingKey.SLIP77_RAND, // Random SLIP-77 key
-)
-
-println("Multisig descriptor: $descriptor")
+// Create 2-of-3 multisig descriptor
+val descriptor = multisigDesc(2, parsedXpubs, Multisig.WSH, DescriptorBlindingKey.ELIP151)
 ```
 
 </TabItem>
 <TabItem value="swift" label="Swift">
 
 ```swift
-import LiquidWalletKit
+// Collect the 3 XPubs from step 1
+let xpubs = [xpub1, xpub2, xpub3]
+let parsedXpubs = try xpubs.map { try keyoriginXpubFromStr($0) }
 
-// Collect keyorigin xpubs from all participants
-let keyoriginXpubs = [
-    "[deadbeef]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-    "[cafebabe]tpubD6NzVbkrYhZ4YB4X8mC6ZfFg7p8pYKKqJFp7CKuP2Y5VcnMPHPmVyRhk7gvTzDH9CiXg4uF1Vz8D3rMYFz2YB4X8mC6ZfFg7p8pYKKqJFp7C",
-    "[facefeed]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk"
-]
-
-// Parse xpubs and create descriptor
-let parsedXpubs = try keyoriginXpubs.map { try keyoriginXpubFromStr($0) }
-
-let descriptor = try multisigDesc(
-    threshold: 2, // 2-of-3 threshold
-    xpubs: parsedXpubs,
-    scriptVariant: .wsh, // Native segwit
-    blindingVariant: .slip77Rand // Random SLIP-77 key
-)
-
-print("Multisig descriptor: \(descriptor)")
+// Create 2-of-3 multisig descriptor
+let descriptor = try multisigDesc(threshold: 2, xpubs: parsedXpubs, scriptVariant: .wsh, blindingVariant: .elip151)
 ```
 
 </TabItem>
 <TabItem value="javascript" label="JavaScript/WASM">
 
 ```javascript
-import { multisigDesc, Multisig, DescriptorBlindingKey, keyoriginXpubFromStr } from 'lwk-wasm';
+// Collect the 3 XPubs from step 1
+const xpubs = [xpub1, xpub2, xpub3];
+const parsedXpubs = xpubs.map(s => keyoriginXpubFromStr(s));
 
-// Collect keyorigin xpubs from all participants
-const keyoriginXpubs = [
-    "[deadbeef]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk",
-    "[cafebabe]tpubD6NzVbkrYhZ4YB4X8mC6ZfFg7p8pYKKqJFp7CKuP2Y5VcnMPHPmVyRhk7gvTzDH9CiXg4uF1Vz8D3rMYFz2YB4X8mC6ZfFg7p8pYKKqJFp7C",
-    "[facefeed]tpubD6NzVbkrYhZ4XgiXtGrdW5XDAPFCL9h7we1vwNCpn8tGbBcgfVYjXyhWo4E1xkh56hjod1RhGjxbaTLV3X4FyWuejifB9justdXBYApDkzk"
-];
-
-// Parse xpubs and create descriptor
-const parsedXpubs = keyoriginXpubs.map(s => keyoriginXpubFromStr(s));
-
-const descriptor = multisigDesc(
-    2, // 2-of-3 threshold
-    parsedXpubs,
-    Multisig.WSH, // Native segwit
-    DescriptorBlindingKey.SLIP77_RAND, // Random SLIP-77 key
-);
-
-console.log(`Multisig descriptor: ${descriptor}`);
+// Create 2-of-3 multisig descriptor
+const descriptor = multisigDesc(2, parsedXpubs, Multisig.WSH, DescriptorBlindingKey.ELIP151);
 ```
 
 </TabItem>
 </Tabs>
 
-## Best Practices
+## Step 3: Create Wallet
 
-1. **Secure XPub Collection**: Use encrypted channels to share XPubs between participants
-2. **Independent Verification**: Each participant should verify the final descriptor
-3. **Test First**: Always test the descriptor with small amounts before production use
-4. **Backup Strategy**: All participants should securely backup the final descriptor
-5. **Coordinate Carefully**: Ensure all participants understand the threshold and setup
+Each participant creates their own watch-only wallet using the shared descriptor.
+Everyone will have the same wallet view and can monitor transactions.
 
-The resulting descriptor can be used to create multisig wallets that all participants can monitor and sign transactions for when the threshold requirement is met.
+<Tabs groupId="language">
+<TabItem value="rust" label="Rust" default>
+
+```rust
+// Everyone uses the same descriptor to create their wallet
+let wollet = Wollet::new(network, persister, descriptor)?;
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+# Everyone uses the same descriptor to create their wallet
+wollet = Wollet(network, descriptor, datadir=None)
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin">
+
+```kotlin
+// Everyone uses the same descriptor to create their wallet
+val wollet = Wollet(network, descriptor, datadir = null)
+```
+
+</TabItem>
+<TabItem value="swift" label="Swift">
+
+```swift
+// Everyone uses the same descriptor to create their wallet
+let wollet = try Wollet(network: network, descriptor: descriptor, datadir: nil)
+```
+
+</TabItem>
+<TabItem value="javascript" label="JavaScript/WASM">
+
+```javascript
+// Everyone uses the same descriptor to create their wallet
+const wollet = new Wollet(network, descriptor, null);
+```
+
+</TabItem>
+</Tabs>
+
+**Done!** All participants now have the same multisig wallet and can coordinate transactions.

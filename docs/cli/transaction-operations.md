@@ -38,7 +38,7 @@ Send L-BTC and custom assets between addresses:
 ```bash
 # Send L-BTC to another address
 lwk_cli wallet send \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --recipient "tlq1qq...receiver:50000000:144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49"
 ```
 
@@ -48,7 +48,7 @@ lwk_cli wallet send \
 ```bash
 # Send custom asset
 lwk_cli wallet send \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --recipient "tlq1qq...receiver:1000000:0bb18d8ca2664551993b276d964ac5e50f5f0c7992b0b805b9f655f136fa1172"
 ```
 
@@ -58,7 +58,7 @@ lwk_cli wallet send \
 ```bash
 # Send multiple assets in one transaction
 lwk_cli wallet send \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --recipient "addr1:50000000:lbtc_asset_id" \
   --recipient "addr2:1000000:custom_asset_id" \
   --recipient "addr3:500:token_asset_id"
@@ -74,27 +74,27 @@ Step-by-step transaction creation and signing:
 ```bash
 # Step 1: Create unsigned transaction
 PSET=$(lwk_cli wallet send \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --recipient "tlq1qqd4er47y4kh4gc2vc6lfh45ead5h89tuxdxglgwdlek5lg8renysvzmvh0zq5gg3l39rvzffqp56lcks5tykkfm4x8p5mwzfh:50000000:144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49")
 
 # Step 2: Inspect transaction details
 lwk_cli wallet pset-details \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --pset "$PSET"
 
 # Step 3: Sign with first signer
 SIGNED1=$(lwk_cli signer sign \
-  --signer-name "alice" \
+  --signer "alice" \
   --pset "$PSET")
 
 # Step 4: Sign with second signer  
 SIGNED2=$(lwk_cli signer sign \
-  --signer-name "bob" \
+  --signer "bob" \
   --pset "$SIGNED1")
 
 # Step 5: Broadcast completed transaction
 TXID=$(lwk_cli wallet broadcast \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --pset "$SIGNED2")
 
 echo "Transaction broadcast: $TXID"
@@ -109,8 +109,14 @@ Analyze transaction details before signing:
 ```bash
 # Get comprehensive PSET details
 lwk_cli wallet pset-details \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..."
+
+# Get PSET details with asset tickers for readability
+lwk_cli wallet pset-details \
+  --wallet "treasury" \
+  --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..." \
+  --with-tickers
 ```
 
 **Example Output**:
@@ -146,9 +152,9 @@ Merge multiple signed PSETs:
 
 ```bash
 # Sequential signing (signer receives previous signatures)
-UNSIGNED=$(lwk_cli wallet send --wallet-name "treasury" --recipient "...")
-ALICE_SIGNED=$(lwk_cli signer sign --signer-name "alice" --pset "$UNSIGNED")
-FULLY_SIGNED=$(lwk_cli signer sign --signer-name "bob" --pset "$ALICE_SIGNED")
+UNSIGNED=$(lwk_cli wallet send --wallet "treasury" --recipient "...")
+ALICE_SIGNED=$(lwk_cli signer sign --signer "alice" --pset "$UNSIGNED")
+FULLY_SIGNED=$(lwk_cli signer sign --signer "bob" --pset "$ALICE_SIGNED")
 ```
 
 </TabItem>
@@ -156,13 +162,13 @@ FULLY_SIGNED=$(lwk_cli signer sign --signer-name "bob" --pset "$ALICE_SIGNED")
 
 ```bash
 # Parallel signing (each signer signs original PSET)
-UNSIGNED=$(lwk_cli wallet send --wallet-name "treasury" --recipient "...")
-ALICE_SIGNED=$(lwk_cli signer sign --signer-name "alice" --pset "$UNSIGNED")
-BOB_SIGNED=$(lwk_cli signer sign --signer-name "bob" --pset "$UNSIGNED")
+UNSIGNED=$(lwk_cli wallet send --wallet "treasury" --recipient "...")
+ALICE_SIGNED=$(lwk_cli signer sign --signer "alice" --pset "$UNSIGNED")
+BOB_SIGNED=$(lwk_cli signer sign --signer "bob" --pset "$UNSIGNED")
 
 # Combine independently signed PSETs
 COMBINED=$(lwk_cli wallet combine \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --pset "$ALICE_SIGNED" \
   --pset "$BOB_SIGNED")
 ```
@@ -179,14 +185,8 @@ Send all available funds to a single address:
 ```bash
 # Drain all L-BTC from wallet
 lwk_cli wallet drain \
-  --wallet-name "treasury" \
+  --wallet "treasury" \
   --address "tlq1qq...destination"
-
-# Drain specific asset
-lwk_cli wallet drain \
-  --wallet-name "treasury" \
-  --address "tlq1qq...destination" \
-  --asset "0bb18d8ca..."
 ```
 
 ### Fee Management
@@ -276,243 +276,94 @@ lwk_cli wallet txs \
   --unconfirmed-only
 ```
 
-### Transaction Memos
+## Liquidex Operations
 
-Add metadata to transactions:
+LWK CLI supports Liquidex, a protocol for peer-to-peer atomic swaps on the Liquid Network.
+
+### Making Liquidex Proposals
+
+Create proposals to trade specific UTXOs for other assets:
 
 ```bash
-# Set transaction memo
-lwk_cli wallet set-tx-memo \
-  --wallet-name "treasury" \
-  --txid "736aa9c7..." \
-  --memo "Payment to supplier #1001"
-
-# Set address memo for future reference
-lwk_cli wallet set-addr-memo \
-  --wallet-name "treasury" \
-  --address "tlq1qq..." \
-  --memo "Customer deposit address - Company ABC"
+# Make a Liquidex proposal to trade UTXO for another asset
+lwk_cli liquidex make \
+  --wallet "treasury" \
+  --txid "736aa9c7548d243f82716618b367770dbf49051ba1d14cb05c60bace0e7656c0" \
+  --vout 0 \
+  --asset "144c654344aa716d6f3abcc1ca90e5641e4e2a7f633bc09fe3baf64585819a49" \
+  --satoshi 50000000
 ```
 
-## Batch Operations
-
-### Multiple Recipients
-
-Send to multiple addresses efficiently:
-
-```bash
-# Batch payments in single transaction
-lwk_cli wallet send \
-  --wallet-name "treasury" \
-  --recipient "customer1:1000000:asset_id" \
-  --recipient "customer2:2000000:asset_id" \
-  --recipient "customer3:1500000:asset_id" \
-  --recipient "change_addr:remaining:asset_id"
+**Example Output**:
+```json
+{
+  "proposal": "liquidex_proposal_data_here...",
+  "expiry": "2024-01-15T12:00:00Z"
+}
 ```
 
-### Scripted Transactions
+### Taking Liquidex Proposals
 
-Automate transaction workflows:
+Accept and complete Liquidex proposals:
 
 ```bash
-#!/bin/bash
-# Batch payment script
-
-WALLET="treasury"
-ASSET_ID="0bb18d8ca2664551993b276d964ac5e50f5f0c7992b0b805b9f655f136fa1172"
-
-# Read payment list from file
-while IFS=',' read -r address amount memo; do
-  echo "Processing payment: $address - $amount - $memo"
-  
-  # Create transaction
-  PSET=$(lwk_cli wallet send \
-    --wallet-name "$WALLET" \
-    --recipient "$address:$amount:$ASSET_ID")
-  
-  # Sign transaction (assuming automated signing setup)
-  SIGNED=$(lwk_cli signer sign --signer-name "auto_signer" --pset "$PSET")
-  
-  # Broadcast
-  TXID=$(lwk_cli wallet broadcast --wallet-name "$WALLET" --pset "$SIGNED")
-  
-  # Add memo
-  lwk_cli wallet set-tx-memo \
-    --wallet-name "$WALLET" \
-    --txid "$TXID" \
-    --memo "$memo"
-    
-  echo "Payment completed: $TXID"
-  sleep 5  # Rate limiting
-done < payments.csv
+# Take a Liquidex proposal
+lwk_cli liquidex take \
+  --wallet "treasury" \
+  --proposal "liquidex_proposal_data_here..."
 ```
 
-## Error Handling
+### Converting PSETs to Proposals
 
-### Common Transaction Errors
+Convert existing PSETs to Liquidex proposals:
 
-**Insufficient Balance**:
 ```bash
-# Check available balance
-lwk_cli wallet balance --wallet-name "treasury"
-
-# Check specific asset balance
-lwk_cli wallet balance \
-  --wallet-name "treasury" \
-  --asset "asset_id"
+# Convert PSET to Liquidex proposal
+lwk_cli liquidex to-proposal \
+  --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..."
 ```
 
-**Invalid Address**:
-```bash
-# Validate address format
-lwk_cli wallet validate-address \
-  --address "tlq1qq..."
+## AMP2 Operations
 
-# Check address network compatibility
-lwk_cli wallet address-info \
-  --address "tlq1qq..."
+AMP2 (Asset Management Platform 2) provides enhanced custody and compliance features.
+
+### Creating AMP2 Descriptors
+
+Generate wallet descriptors compatible with AMP2:
+
+```bash
+# Create AMP2 wallet descriptor
+lwk_cli amp2 descriptor \
+  --signer "alice"
 ```
 
-**UTXO Conflicts**:
-```bash
-# Check UTXO availability
-lwk_cli wallet utxos --wallet-name "treasury"
+### Registering with AMP2 Server
 
-# Sync wallet to latest state
-lwk_cli wallet sync --wallet-name "treasury"
+Register wallets with AMP2 for cosigning services:
+
+```bash
+# Register wallet with AMP2 server
+lwk_cli amp2 register \
+  --signer "alice"
 ```
 
-### Transaction Recovery
+### AMP2 Cosigning
 
-**Failed Broadcasts**:
+Request AMP2 server to cosign transactions:
+
 ```bash
-# Retry broadcast with different server
-lwk_cli wallet broadcast \
-  --wallet-name "treasury" \
-  --pset "$SIGNED_PSET" \
-  --force
-
-# Check mempool status
-lwk_cli wallet tx-status \
-  --wallet-name "treasury" \
-  --txid "$TXID"
+# Request AMP2 cosigning
+lwk_cli amp2 cosign \
+  --pset "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA..."
 ```
 
-**Stuck Transactions**:
-```bash
-# Create replacement transaction with higher fee
-lwk_cli wallet send \
-  --wallet-name "treasury" \
-  --recipient "same_recipient:same_amount:asset" \
-  --fee-rate 200 \
-  --replace-txid "$STUCK_TXID"
-```
-
-## Security Considerations
-
-### Transaction Security
-
-**Amount Verification**:
-- Always verify amounts on hardware wallet screens
-- Double-check asset IDs before signing
-- Confirm recipient addresses independently
-
-**PSET Handling**:
-```bash
-# Verify PSET integrity before signing
-lwk_cli wallet pset-details \
-  --wallet-name "treasury" \
-  --pset "$PSET" \
-  --verify-integrity
-
-# Check for suspicious outputs
-lwk_cli wallet pset-details \
-  --wallet-name "treasury" \
-  --pset "$PSET" \
-  --highlight-warnings
-```
-
-### Privacy Protection
-
-**Address Management**:
-```bash
-# Generate fresh addresses for each transaction
-lwk_cli wallet address \
-  --wallet-name "treasury" \
-  --index new
-
-# Avoid address reuse
-lwk_cli wallet set-policy \
-  --wallet-name "treasury" \
-  --prevent-address-reuse
-```
-
-**Confidential Transactions**:
-- All Liquid transactions are confidential by default
-- Amounts and asset types are hidden from public view
-- Only wallet owners can see unblinded transaction details
-
-## Performance Optimization
-
-### Batch Processing
-
-```bash
-# Process multiple transactions efficiently
-for payment in $(cat payment_queue.txt); do
-  lwk_cli wallet send \
-    --wallet-name "treasury" \
-    --recipient "$payment" \
-    --async
-done
-
-# Wait for all transactions to complete
-lwk_cli wallet wait-for-completion --wallet-name "treasury"
-```
-
-### Resource Management
-
-```bash
-# Limit concurrent operations
-lwk_cli wallet set-limits \
-  --wallet-name "treasury" \
-  --max-concurrent-tx 5 \
-  --memory-limit 100MB
-
-# Clean up old PSETs
-lwk_cli wallet cleanup \
-  --wallet-name "treasury" \
-  --remove-old-psets \
-  --older-than "7d"
-```
-
-## Integration Examples
-
-### API Integration
-
-```bash
-# REST API wrapper
-curl -X POST http://localhost:3000/wallet/send \
-  -H "Content-Type: application/json" \
-  -d '{
-    "wallet_name": "treasury",
-    "recipients": [
-      {
-        "address": "tlq1qq...",
-        "amount": 1000000,
-        "asset": "asset_id"
-      }
-    ]
-  }'
-```
-
-### Webhook Notifications
-
-```bash
-# Set up transaction notifications
-lwk_cli wallet set-webhook \
-  --wallet-name "treasury" \
-  --url "https://api.example.com/webhook" \
-  --events "tx_confirmed,tx_failed"
+**Example Output**:
+```json
+{
+  "cosigned_pset": "cHNldP8BAgQCAAAAAQQBAQEFAQRPAQQ1h88DV6y9foAA...",
+  "status": "approved",
+  "compliance_checks": "passed"
+}
 ```
 
 ## Next Steps
